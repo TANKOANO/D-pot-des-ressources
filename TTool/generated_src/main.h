@@ -1,0 +1,15 @@
+#ifndef MAIN_H
+#define MAIN_H
+/* Main mutex */
+extern pthread_mutex_t __mainMutex;
+
+/* Synchronous channels */
+extern syncchannel __AlarmManager_alarmOff__AlarmActuator_alarmOff;
+extern syncchannel __AlarmManager_alarmOn__AlarmActuator_alarmOn;
+extern syncchannel __MainController_highPressure__AlarmManager_highPressure;
+extern syncchannel __PressureSensor_pressureValue__MainController_pressureValue;
+extern syncchannel __AlarmManager_set_alarmTimer__Timer_alarmTimer_AlarmManager_set;
+extern syncchannel __AlarmManager_reset_alarmTimer__Timer_alarmTimer_AlarmManager_reset;
+extern syncchannel __AlarmManager_expire_alarmTimer__Timer_alarmTimer_AlarmManager_expire;
+/* Asynchronous channels */
+#endif

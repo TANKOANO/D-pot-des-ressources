@@ -1,0 +1,232 @@
+PACKAGE Pacemaker_Pkg
+PUBLIC
+	with Data_Model;
+	with Deployment;
+
+	-- =========================================================
+	-- BUS : Internal_Bus
+	-- =========================================================
+	bus Internal_Bus
+	end Internal_Bus;
+
+	bus implementation Internal_Bus.impl
+	end Internal_Bus.impl;
+
+	-- =========================================================
+	-- DATA : int
+	-- =========================================================
+	data int
+		properties
+			Data_Model::Data_Representation => Integer;
+			Data_Model::Initial_Value       => ("1");
+	end int;
+
+	data implementation int.impl
+	end int.impl;
+
+	-- =========================================================
+	-- PROCESSOR : HWPlatform  (cible Linux / Ubuntu)
+	-- =========================================================
+	processor HWPlatform
+		features
+			BA: requires bus access Internal_Bus.impl;
+	end HWPlatform;
+
+	processor implementation HWPlatform.impl
+		properties
+			Scheduling_Protocol            => (POSIX_1003_HIGHEST_PRIORITY_FIRST_PROTOCOL);
+			Deployment::Execution_Platform => Native;
+	end HWPlatform.impl;
+
+	-- =========================================================
+	-- DEVICE : VentricleLead
+	-- =========================================================
+	device VentricleLead
+		features
+			VentricleSense: out event port;
+			VentriclePulse: in event port;
+			Normal_Beat:    in event port;
+			BA:             requires bus access Internal_Bus.impl;
+	end VentricleLead;
+
+	device implementation VentricleLead.impl
+	end VentricleLead.impl;
+
+	-- =========================================================
+	-- SUBPROGRAM : DualOrTimer_Spg
+	-- =========================================================
+	subprogram DualOrTimer_Spg
+	end DualOrTimer_Spg;
+
+	subprogram implementation DualOrTimer_Spg.impl
+		properties
+			Source_Language => (C);
+			Source_Name     => "dual_or_timer_job";
+			Source_Text     => ("dual_or_timer.c");
+	end DualOrTimer_Spg.impl;
+
+	-- =========================================================
+	-- THREAD : DualOrTimer
+	-- Timed remplace par Sporadic (Timed non supporte par
+	-- PolyORB-HI/C). Sporadic avec Period comme delai max
+	-- est l'equivalent fonctionnel acceptable.
+	-- =========================================================
+	thread DualOrTimer
+		features
+			input:  in event port;
+			output: out event port;
+	end DualOrTimer;
+
+	thread implementation DualOrTimer.impl
+		calls
+			call_seq: {
+				spg_call: subprogram DualOrTimer_Spg.impl;
+			};
+		properties
+			Dispatch_Protocol      => Sporadic;
+			Period                 => 100ms;
+			Deadline          	   => 100ms;
+			Compute_Execution_Time => 0ms .. 2ms;
+	end DualOrTimer.impl;
+
+	-- =========================================================
+	-- SUBPROGRAM : VVIMode_Spg
+	-- =========================================================
+	subprogram VVIMode_Spg
+	end VVIMode_Spg;
+
+	subprogram implementation VVIMode_Spg.impl
+		properties
+			Source_Language => (C);
+			Source_Name     => "vvi_mode_job";
+			Source_Text     => ("vvi_mode.c");
+	end VVIMode_Spg.impl;
+
+	-- =========================================================
+	-- THREAD : VVIMode
+	-- =========================================================
+	thread VVIMode
+		features
+			s:           in event port;
+			lrl_timeout: in event port;
+			vrp_timeout: in event port;
+			p:           out event port;
+			n:           out event port;
+			p_or_n1:     out event port;
+			p_or_n2:     out event port;
+	end VVIMode;
+
+	thread implementation VVIMode.others
+		subcomponents
+			vrp: data int.impl;
+		calls
+			call_seq: {
+				spg_call: subprogram VVIMode_Spg.impl;
+			};
+		properties
+			Dispatch_Protocol      => Sporadic;
+			Period                 => 30ms;
+			Deadline          	   => 30ms; 
+			Compute_Execution_Time => 0ms .. 4ms;
+	end VVIMode.others;
+
+	-- =========================================================
+	-- SUBPROGRAM : Controler_Spg
+	-- =========================================================
+	subprogram Controler_Spg
+	end Controler_Spg;
+
+	subprogram implementation Controler_Spg.impl
+		properties
+			Source_Language => (C);
+			Source_Name     => "controler_job";
+			Source_Text     => ("controler.c");
+	end Controler_Spg.impl;
+
+	-- =========================================================
+	-- THREAD : Controler
+	-- =========================================================
+	thread Controler
+		features
+			L_VentricleSense: in event port;
+			L_VentriclePulse: out event port;
+			Normal_Beat:      in event port;
+			S_VentricleSense: out event port;
+			S_VentriclePulse: in event port;
+	end Controler;
+
+	thread implementation Controler.impl
+		calls
+			call_seq: {
+				spg_call: subprogram Controler_Spg.impl;
+			};
+		properties
+			Dispatch_Protocol      => Periodic;
+			Period                 => 100ms;
+			Deadline               => 100ms;
+			Compute_Execution_Time => 0ms .. 10ms;
+	end Controler.impl;
+
+	-- =========================================================
+	-- PROCESS : PacemakerSW
+	-- =========================================================
+	process PacemakerSW
+		features
+			s: in event port;
+			p: out event port;
+			n: out event port;
+	end PacemakerSW;
+
+	process implementation PacemakerSW.others
+		subcomponents
+			VRPTimeout: thread DualOrTimer.impl {
+				Period                 => 30ms;
+				Deadline          	   => 30ms;
+				Compute_Execution_Time => 0ms .. 2ms;};
+			LRLTimeout: thread DualOrTimer.impl {
+				Period                 => 100ms;
+				Deadline          	   => 100ms;
+				Compute_Execution_Time => 0ms .. 2ms;};
+			VVIMode: thread VVIMode.others;
+		connections
+			cnx_0: port s                 -> VVIMode.s;
+			cnx_1: port VVIMode.p         -> p;
+			cnx_2: port VVIMode.n         -> n;
+			cnx_3: port VRPTimeout.output -> VVIMode.vrp_timeout;
+			cnx_4: port LRLTimeout.output -> VVIMode.lrl_timeout;
+			cnx_5: port VVIMode.p_or_n1   -> VRPTimeout.input;
+			cnx_7: port VVIMode.p_or_n2   -> LRLTimeout.input;
+	end PacemakerSW.others;
+
+	-- =========================================================
+	-- SYSTEM : DeviceControllerMonitor  (root pour Ocarina)
+	-- =========================================================
+	system DeviceControllerMonitor
+	end DeviceControllerMonitor;
+
+	system implementation DeviceControllerMonitor.others
+		subcomponents
+			Lead:        device VentricleLead.impl;
+			PacemakerSW: process PacemakerSW.others;
+			HWPlatform:  processor HWPlatform.impl;
+			TheBus:      bus Internal_Bus.impl;
+		connections
+			-- Connexions fonctionnelles device <-> process
+			cnx_3: port Lead.VentricleSense -> PacemakerSW.s
+				{Actual_Connection_Binding => (reference (TheBus));};
+			cnx_4: port PacemakerSW.p -> Lead.VentriclePulse
+				{Actual_Connection_Binding => (reference (TheBus));};
+			cnx_5: port PacemakerSW.n -> Lead.Normal_Beat
+				{Actual_Connection_Binding => (reference (TheBus));};
+			-- Acces physique au bus
+			cnx_bus_lead: bus access TheBus -> Lead.BA;
+			cnx_bus_hw:   bus access TheBus -> HWPlatform.BA;
+		properties
+			-- Device et process bindes sur le meme processor
+			Actual_Processor_Binding => (reference (HWPlatform))
+				applies to PacemakerSW;
+			Actual_Processor_Binding => (reference (HWPlatform))
+				applies to Lead;
+	end DeviceControllerMonitor.others;
+
+end Pacemaker_Pkg;

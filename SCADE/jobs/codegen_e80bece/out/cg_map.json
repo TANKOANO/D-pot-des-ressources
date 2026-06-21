@@ -1,0 +1,1477 @@
+{
+  "version" : "0.1",
+  "model" : [
+    [ "predefined_type", { "id" : 8, "name" : "bool" } ],
+    [ "predefined_type", { "id" : 9, "name" : "char" } ],
+    [ "predefined_type", { "id" : 10, "name" : "int8" } ],
+    [ "predefined_type", { "id" : 11, "name" : "int16" } ],
+    [ "predefined_type", { "id" : 12, "name" : "int32" } ],
+    [ "predefined_type", { "id" : 13, "name" : "int64" } ],
+    [ "predefined_type", { "id" : 14, "name" : "uint8" } ],
+    [ "predefined_type", { "id" : 15, "name" : "uint16" } ],
+    [ "predefined_type", { "id" : 16, "name" : "uint32" } ],
+    [ "predefined_type", { "id" : 17, "name" : "uint64" } ],
+    [ "predefined_type", { "id" : 18, "name" : "float32" } ],
+    [ "predefined_type", { "id" : 19, "name" : "float64" } ],
+    [
+      "operator",
+      {
+        "id" : 55,
+        "path" : "QuadFlightControl::QuadFlightControl",
+        "inputs" : [
+          { "id" : 13892, "name" : "motorStates", "projection" : [ "frontLeftFaulty" ] },
+          { "id" : 13893, "name" : "motorStates", "projection" : [ "frontRightFaulty" ] },
+          { "id" : 13894, "name" : "motorStates", "projection" : [ "rearLeftFaulty" ] },
+          { "id" : 13895, "name" : "motorStates", "projection" : [ "rearRightFaulty" ] },
+          { "id" : 1032, "name" : "isReset" },
+          { "id" : 1033, "name" : "currentAttitude" },
+          { "id" : 1034, "name" : "desiredAttitude" },
+          { "id" : 1035, "name" : "desiredVerticalAccel" }
+        ],
+        "outputs" : [
+          { "id" : 13896, "name" : "motorHealthState", "projection" : [ "frontLeft" ] },
+          { "id" : 13897, "name" : "motorHealthState", "projection" : [ "frontRight" ] },
+          { "id" : 13898, "name" : "motorHealthState", "projection" : [ "rearLeft" ] },
+          { "id" : 13899, "name" : "motorHealthState", "projection" : [ "rearRight" ] },
+          { "id" : 13900, "name" : "rotorCmd", "projection" : [ "frontLeftRotor" ] },
+          { "id" : 13901, "name" : "rotorCmd", "projection" : [ "frontRightRotor" ] },
+          { "id" : 13902, "name" : "rotorCmd", "projection" : [ "rearLeftRotor" ] },
+          { "id" : 13903, "name" : "rotorCmd", "projection" : [ "rearRightRotor" ] }
+        ],
+        "root" : true,
+        "instances" : [
+          [ "operator", { "id" : 1063, "path" : "#1376:", "operator" : 56 } ],
+          [ "operator", { "id" : 1058, "path" : "#1382:", "operator" : 58 } ]
+        ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 56,
+        "path" : "QuadFlightControl::MotorControl",
+        "inputs" : [
+          { "id" : 1067, "name" : "attitudeCmd" },
+          { "id" : 1068, "name" : "thrustControlCmd" },
+          { "id" : 14096, "name" : "motorStates", "projection" : [ "frontLeftFaulty" ] },
+          { "id" : 14097, "name" : "motorStates", "projection" : [ "frontRightFaulty" ] },
+          { "id" : 14098, "name" : "motorStates", "projection" : [ "rearLeftFaulty" ] },
+          { "id" : 14099, "name" : "motorStates", "projection" : [ "rearRightFaulty" ] }
+        ],
+        "outputs" : [
+          { "id" : 14100, "name" : "motorHealthStates", "projection" : [ "frontLeft" ] },
+          { "id" : 14101, "name" : "motorHealthStates", "projection" : [ "frontRight" ] },
+          { "id" : 14102, "name" : "motorHealthStates", "projection" : [ "rearLeft" ] },
+          { "id" : 14103, "name" : "motorHealthStates", "projection" : [ "rearRight" ] },
+          { "id" : 14104, "name" : "rotorCmd", "projection" : [ "frontLeftRotor" ] },
+          { "id" : 14105, "name" : "rotorCmd", "projection" : [ "frontRightRotor" ] },
+          { "id" : 14106, "name" : "rotorCmd", "projection" : [ "rearLeftRotor" ] },
+          { "id" : 14107, "name" : "rotorCmd", "projection" : [ "rearRightRotor" ] }
+        ],
+        "instances" : [
+          [ "operator", { "id" : 1107, "path" : "$LimitU3:", "operator" : 19384 } ],
+          [ "operator", { "id" : 1113, "path" : "$LimitU1:", "operator" : 19384 } ],
+          [ "operator", { "id" : 1127, "path" : "$CheckFL:", "operator" : 57 } ],
+          [ "operator", { "id" : 1125, "path" : "$CheckFR:", "operator" : 57 } ],
+          [ "operator", { "id" : 1123, "path" : "$CheckRR:", "operator" : 57 } ],
+          [ "operator", { "id" : 1121, "path" : "$CheckRL:", "operator" : 57 } ],
+          [ "operator", { "id" : 1110, "path" : "$LimitU2:", "operator" : 19384 } ],
+          [ "operator", { "id" : 1104, "path" : "$LimitU4:", "operator" : 19384 } ],
+          [ "operator", { "id" : 1101, "path" : "#1126:", "operator" : 87 } ],
+          [ "operator", { "id" : 1098, "path" : "#1128:", "operator" : 61 } ]
+        ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 57,
+        "path" : "QuadFlightControl::CheckMotorHealth",
+        "inputs" : [ { "id" : 1129, "name" : "isMotorFaulty" } ],
+        "outputs" : [ { "id" : 1130, "name" : "motorHealthState" } ],
+        "instances" : [
+          [
+            "operator",
+            {
+              "id" : 1153,
+              "path" : "$MotorHealthManagement:Failure:<1>:$(?-0-0):",
+              "operator" : 19724
+            }
+          ],
+          [
+            "operator",
+            {
+              "id" : 1146,
+              "path" : "$MotorHealthManagement:Abnormal:<2>:$(?-0):",
+              "operator" : 19724
+            }
+          ]
+        ]
+      }
+    ],
+    [
+      "const",
+      { "id" : 78, "path" : "QuadFlightControl::TIME_TO_MOTORS_NORMAL", "type" : 10 }
+    ],
+    [
+      "const",
+      { "id" : 77, "path" : "QuadFlightControl::TIME_TO_MOTORS_FAILURE", "type" : 10 }
+    ],
+    [
+      "mono",
+      {
+        "id" : 19724,
+        "path" : "Flows::Times[][t=int8]",
+        "src" : 53,
+        "inputs" : [ { "id" : 19733, "src" : 1020 }, { "id" : 19734, "src" : 1021 } ],
+        "outputs" : [ { "id" : 19735, "src" : 1022 } ],
+        "type_parameters" : [ { "id" : 1019, "name" : "t", "type" : 10 } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 53,
+        "path" : "Flows::Times",
+        "inputs" : [
+          { "id" : 1020, "name" : "count" },
+          { "id" : 1021, "name" : "in" }
+        ],
+        "outputs" : [ { "id" : 1022, "name" : "out" } ]
+      }
+    ],
+    [
+      "const",
+      { "id" : 76, "path" : "QuadFlightControl::THRUST_HIGH_LIMIT", "type" : 18 }
+    ],
+    [
+      "const",
+      { "id" : 74, "path" : "QuadFlightControl::ROTATE_LIMIT", "type" : 18 }
+    ],
+    [
+      "const",
+      { "id" : 83, "path" : "QuadFlightControl::YAW_LIMIT", "type" : 18 }
+    ],
+    [
+      "operator",
+      {
+        "id" : 87,
+        "path" : "QuadUtils::RotateXY",
+        "inputs" : [
+          { "id" : 1644, "name" : "x" },
+          { "id" : 1645, "name" : "y" },
+          { "id" : 1646, "name" : "a" }
+        ],
+        "outputs" : [ { "id" : 1647, "name" : "xo" }, { "id" : 1648, "name" : "yo" } ],
+        "instances" : [
+          [ "operator", { "id" : 1683, "path" : "#1490:", "operator" : 274 } ],
+          [ "operator", { "id" : 1673, "path" : "#1495:", "operator" : 276 } ]
+        ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 276,
+        "path" : "Math::Trigo::StdC::Sine32",
+        "inputs" : [ { "id" : 5369, "name" : "x" } ],
+        "outputs" : [ { "id" : 5370, "name" : "v" } ],
+        "imported" : true,
+        "specialize" : 412
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 61,
+        "path" : "QuadFlightControl::RotorControl",
+        "inputs" : [
+          { "id" : 1442, "name" : "u1" },
+          { "id" : 1443, "name" : "u2" },
+          { "id" : 1444, "name" : "u3" },
+          { "id" : 1445, "name" : "u4" }
+        ],
+        "outputs" : [
+          { "id" : 1446, "name" : "w1" },
+          { "id" : 1447, "name" : "w2" },
+          { "id" : 1448, "name" : "w3" },
+          { "id" : 1449, "name" : "w4" }
+        ],
+        "instances" : [
+          [ "operator", { "id" : 1495, "path" : "#1409:", "operator" : 19674 } ],
+          [ "operator", { "id" : 1493, "path" : "#1410:", "operator" : 19674 } ],
+          [ "operator", { "id" : 1491, "path" : "#1411:", "operator" : 19674 } ],
+          [ "operator", { "id" : 1489, "path" : "#1412:", "operator" : 19674 } ],
+          [ "operator", { "id" : 1484, "path" : "#1416:", "operator" : 185 } ],
+          [ "operator", { "id" : 1482, "path" : "#1417:", "operator" : 185 } ],
+          [ "operator", { "id" : 1480, "path" : "#1418:", "operator" : 185 } ],
+          [ "operator", { "id" : 1478, "path" : "#1419:", "operator" : 185 } ]
+        ]
+      }
+    ],
+    [ "const", { "id" : 65, "path" : "QuadFlightControl::L", "type" : 18 } ],
+    [
+      "const",
+      { "id" : 75, "path" : "QuadFlightControl::THRUST_COEF", "type" : 18 }
+    ],
+    [
+      "const",
+      { "id" : 63, "path" : "QuadFlightControl::DRAG_TORQ", "type" : 18 }
+    ],
+    [
+      "mono",
+      {
+        "id" : 19674,
+        "path" : "Math::Common::Max[][T=float32]",
+        "src" : 171,
+        "inputs" : [ { "id" : 19679, "src" : 3524 }, { "id" : 19680, "src" : 3525 } ],
+        "outputs" : [ { "id" : 19681, "src" : 3526 } ],
+        "type_parameters" : [ { "id" : 3523, "name" : "T", "type" : 18 } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 171,
+        "path" : "Math::Common::Max",
+        "inputs" : [ { "id" : 3524, "name" : "x" }, { "id" : 3525, "name" : "y" } ],
+        "outputs" : [ { "id" : 3526, "name" : "v" } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 185,
+        "path" : "Math::Common::Sqrt32",
+        "inputs" : [ { "id" : 3786, "name" : "x" } ],
+        "outputs" : [ { "id" : 3787, "name" : "v" } ],
+        "imported" : true,
+        "specialize" : 363
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 58,
+        "path" : "QuadFlightControl::FlightControl",
+        "inputs" : [
+          { "id" : 1154, "name" : "desiredAttitude" },
+          { "id" : 1155, "name" : "desiredVerticalAcceleration" },
+          { "id" : 1156, "name" : "currentAttitude" },
+          { "id" : 1157, "name" : "isReset" },
+          { "id" : 14283, "name" : "motorHealthState", "projection" : [ "frontLeft" ] },
+          { "id" : 14284, "name" : "motorHealthState", "projection" : [ "frontRight" ] },
+          { "id" : 14285, "name" : "motorHealthState", "projection" : [ "rearLeft" ] },
+          { "id" : 14286, "name" : "motorHealthState", "projection" : [ "rearRight" ] }
+        ],
+        "outputs" : [
+          { "id" : 1159, "name" : "attitudeCmd" },
+          { "id" : 1160, "name" : "thrustControlCmd" }
+        ],
+        "instances" : [
+          [ "operator", { "id" : 1213, "path" : "$FilterRoll:", "operator" : 60 } ],
+          [ "operator", { "id" : 1220, "path" : "$PIDPitch:", "operator" : 59 } ],
+          [ "operator", { "id" : 1301, "path" : "$SatPitchFail:", "operator" : 19563 } ],
+          [ "operator", { "id" : 1316, "path" : "$SatPitch:", "operator" : 19563 } ],
+          [ "operator", { "id" : 1311, "path" : "$SatRoll:", "operator" : 19563 } ],
+          [ "operator", { "id" : 1297, "path" : "$SatRollFail:", "operator" : 19563 } ],
+          [ "operator", { "id" : 1286, "path" : "#1194:", "operator" : 274 } ],
+          [ "operator", { "id" : 1282, "path" : "#1197:", "operator" : 274 } ],
+          [ "operator", { "id" : 1249, "path" : "#1212:", "operator" : 62 } ],
+          [ "operator", { "id" : 1247, "path" : "#1213:", "operator" : 19468 } ],
+          [ "operator", { "id" : 1239, "path" : "#1218:", "operator" : 19468 } ],
+          [ "operator", { "id" : 1217, "path" : "$PIDRoll:", "operator" : 59 } ],
+          [ "operator", { "id" : 1209, "path" : "$FilterPitch:", "operator" : 60 } ]
+        ]
+      }
+    ],
+    [
+      "mono",
+      {
+        "id" : 19563,
+        "path" : "QuadUtils::LimiterSymmetrical[][T=float32]",
+        "src" : 86,
+        "inputs" : [
+          { "id" : 19570, "src" : 1606 },
+          { "id" : 19571, "src" : 1607 },
+          { "id" : 19572, "src" : 1608 }
+        ],
+        "outputs" : [ { "id" : 19573, "src" : 1609 } ],
+        "type_parameters" : [ { "id" : 1605, "name" : "T", "type" : 18 } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 86,
+        "path" : "QuadUtils::LimiterSymmetrical",
+        "inputs" : [
+          { "id" : 1606, "name" : "lsInput" },
+          { "id" : 1607, "name" : "bandOrigin" },
+          { "id" : 1608, "name" : "tolerance" }
+        ],
+        "outputs" : [ { "id" : 1609, "name" : "lsOutput" } ],
+        "expanded" : true
+      }
+    ],
+    [ "const", { "id" : 64, "path" : "QuadFlightControl::G", "type" : 18 } ],
+    [
+      "operator",
+      {
+        "id" : 274,
+        "path" : "Math::Trigo::StdC::Cosine32",
+        "inputs" : [ { "id" : 5365, "name" : "x" } ],
+        "outputs" : [ { "id" : 5366, "name" : "v" } ],
+        "imported" : true,
+        "specialize" : 411
+      }
+    ],
+    [ "const", { "id" : 66, "path" : "QuadFlightControl::MASS", "type" : 18 } ],
+    [
+      "operator",
+      {
+        "id" : 62,
+        "path" : "QuadFlightControl::YawControl",
+        "inputs" : [
+          { "id" : 1505, "name" : "targetYaw" },
+          { "id" : 1506, "name" : "currentYaw" }
+        ],
+        "outputs" : [ { "id" : 1507, "name" : "targetR" } ],
+        "instances" : [
+          [ "operator", { "id" : 1525, "path" : "#1472:", "operator" : 19468 } ],
+          [ "operator", { "id" : 1556, "path" : "#1454:", "operator" : 19468 } ],
+          [ "operator", { "id" : 1523, "path" : "#1473:", "operator" : 59 } ]
+        ]
+      }
+    ],
+    [ "const", { "id" : 80, "path" : "QuadFlightControl::YAW_KD", "type" : 18 } ],
+    [ "const", { "id" : 81, "path" : "QuadFlightControl::YAW_KI", "type" : 18 } ],
+    [ "const", { "id" : 82, "path" : "QuadFlightControl::YAW_KP", "type" : 18 } ],
+    [ "const", { "id" : 68, "path" : "QuadFlightControl::PITCH_KD", "type" : 18 } ],
+    [ "const", { "id" : 69, "path" : "QuadFlightControl::PITCH_KI", "type" : 18 } ],
+    [ "const", { "id" : 70, "path" : "QuadFlightControl::PITCH_KP", "type" : 18 } ],
+    [ "const", { "id" : 71, "path" : "QuadFlightControl::ROLL_KD", "type" : 18 } ],
+    [ "const", { "id" : 72, "path" : "QuadFlightControl::ROLL_KI", "type" : 18 } ],
+    [ "const", { "id" : 73, "path" : "QuadFlightControl::ROLL_KP", "type" : 18 } ],
+    [
+      "operator",
+      {
+        "id" : 59,
+        "path" : "QuadFlightControl::PID",
+        "inputs" : [
+          { "id" : 1319, "name" : "target" },
+          { "id" : 1320, "name" : "current" },
+          { "id" : 1321, "name" : "kp" },
+          { "id" : 1322, "name" : "ki" },
+          { "id" : 1323, "name" : "kd" },
+          { "id" : 1324, "name" : "errorLim" },
+          { "id" : 1325, "name" : "reset" }
+        ],
+        "outputs" : [ { "id" : 1326, "name" : "control" } ],
+        "instances" : [
+          [ "operator", { "id" : 1359, "path" : "#4:" } ],
+          [ "operator", { "id" : 1364, "path" : "#3:" } ],
+          [ "operator", { "id" : 1369, "path" : "#2:" } ],
+          [ "operator", { "id" : 1374, "path" : "#1:" } ],
+          [ "operator", { "id" : 1397, "path" : "#1302:", "operator" : 19468 } ],
+          [ "operator", { "id" : 1357, "path" : "#5:", "operator" : 19522 } ],
+          [ "operator", { "id" : 1349, "path" : "#8:" } ]
+        ]
+      }
+    ],
+    [
+      "mono",
+      {
+        "id" : 19522,
+        "path" : "QuadUtils::Integrator[][T=float32]",
+        "src" : 88,
+        "inputs" : [ { "id" : 19524, "src" : 1693 }, { "id" : 19525, "src" : 1694 } ],
+        "outputs" : [ { "id" : 19526, "src" : 1695 } ],
+        "type_parameters" : [ { "id" : 1692, "name" : "T", "type" : 18 } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 88,
+        "path" : "QuadUtils::Integrator",
+        "inputs" : [ { "id" : 1693, "name" : "i" }, { "id" : 1694, "name" : "x" } ],
+        "outputs" : [ { "id" : 1695, "name" : "y" } ]
+      }
+    ],
+    [ "const", { "id" : 79, "path" : "QuadFlightControl::T_CYCLE", "type" : 18 } ],
+    [ "const", { "id" : 67, "path" : "QuadFlightControl::PI", "type" : 18 } ],
+    [
+      "operator",
+      {
+        "id" : 60,
+        "path" : "QuadFlightControl::PitchRollFilter",
+        "inputs" : [
+          { "id" : 1407, "name" : "in" },
+          { "id" : 1408, "name" : "min" },
+          { "id" : 1409, "name" : "max" },
+          { "id" : 1410, "name" : "band" }
+        ],
+        "outputs" : [ { "id" : 1411, "name" : "out" } ],
+        "instances" : [
+          [ "operator", { "id" : 1432, "path" : "#1360:", "operator" : 19468 } ],
+          [ "operator", { "id" : 1430, "path" : "#1362:", "operator" : 19384 } ],
+          [ "operator", { "id" : 1422, "path" : "#0:" } ]
+        ]
+      }
+    ],
+    [
+      "mono",
+      {
+        "id" : 19468,
+        "path" : "Math::Common::Abs[][T=float32]",
+        "src" : 154,
+        "inputs" : [ { "id" : 19470, "src" : 3469 } ],
+        "outputs" : [ { "id" : 19471, "src" : 3470 } ],
+        "type_parameters" : [ { "id" : 3468, "name" : "T", "type" : 18 } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 154,
+        "path" : "Math::Common::Abs",
+        "inputs" : [ { "id" : 3469, "name" : "x" } ],
+        "outputs" : [ { "id" : 3470, "name" : "v" } ],
+        "expanded" : true
+      }
+    ],
+    [
+      "mono",
+      {
+        "id" : 19384,
+        "path" : "QuadUtils::LimiterUnSymmetrical[][T=float32]",
+        "src" : 85,
+        "inputs" : [
+          { "id" : 19386, "src" : 1573 },
+          { "id" : 19387, "src" : 1574 },
+          { "id" : 19388, "src" : 1575 }
+        ],
+        "outputs" : [ { "id" : 19389, "src" : 1576 } ],
+        "type_parameters" : [ { "id" : 1572, "name" : "T", "type" : 18 } ]
+      }
+    ],
+    [
+      "operator",
+      {
+        "id" : 85,
+        "path" : "QuadUtils::LimiterUnSymmetrical",
+        "inputs" : [
+          { "id" : 1573, "name" : "lusInput" },
+          { "id" : 1574, "name" : "lowLimit" },
+          { "id" : 1575, "name" : "highLimit" }
+        ],
+        "outputs" : [ { "id" : 1576, "name" : "lusOutput" } ],
+        "expanded" : true
+      }
+    ],
+    [
+      "enum",
+      {
+        "id" : 285,
+        "values" : [
+          { "id" : 286, "path" : "QuadTypes::NOMINAL" },
+          { "id" : 287, "path" : "QuadTypes::ABNORMAL" },
+          { "id" : 288, "path" : "QuadTypes::FAILURE" }
+        ]
+      }
+    ],
+    [
+      "struct",
+      {
+        "id" : 281,
+        "fields" : [
+          { "id" : 282, "name" : "pitch", "type" : 18 },
+          { "id" : 283, "name" : "roll", "type" : 18 },
+          { "id" : 284, "name" : "yaw", "type" : 18 }
+        ]
+      }
+    ],
+    [ "elaboration", { "id" : 0 } ]
+  ],
+  "code" : [
+    {
+      "interface_file" : "QuadFlightControl_QuadFlightControl.h",
+      "implementation_file" : "QuadFlightControl_QuadFlightControl.c",
+      "declarations" : [
+        [
+          "macro",
+          { "id" : 22154, "name" : "SWAN_QuadFlightControl_QuadFlightControl_H_" }
+        ],
+        [
+          "struct",
+          {
+            "id" : 22145,
+            "name" : "outC_QuadFlightControl_QuadFlightControl",
+            "fields" : [
+              { "id" : 21936, "name" : "mem1", "type" : 285 },
+              { "id" : 21937, "name" : "mem2", "type" : 285 },
+              { "id" : 21938, "name" : "mem3", "type" : 285 },
+              { "id" : 21939, "name" : "mem4", "type" : 285 },
+              { "id" : 22146, "name" : "Ctx_FlightControl1", "type" : 22094 },
+              { "id" : 22147, "name" : "Ctx_MotorControl1", "type" : 22132 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 55,
+            "name" : "QuadFlightControl_QuadFlightControl",
+            "parameters" : [
+              { "id" : 13892, "name" : "g1_motorStates", "type" : 22035 },
+              { "id" : 13893, "name" : "g2_motorStates", "type" : 22035 },
+              { "id" : 13894, "name" : "g3_motorStates", "type" : 22035 },
+              { "id" : 13895, "name" : "g4_motorStates", "type" : 22035 },
+              { "id" : 1032, "name" : "isReset", "type" : 22035 },
+              {
+                "id" : 1033,
+                "name" : "currentAttitude",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              },
+              {
+                "id" : 1034,
+                "name" : "desiredAttitude",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              },
+              { "id" : 1035, "name" : "desiredVerticalAccel", "type" : 21998 },
+              {
+                "id" : 13896,
+                "name" : "g1_motorHealthState",
+                "type" : 285,
+                "pointer" : true
+              },
+              {
+                "id" : 13897,
+                "name" : "g2_motorHealthState",
+                "type" : 285,
+                "pointer" : true
+              },
+              {
+                "id" : 13898,
+                "name" : "g3_motorHealthState",
+                "type" : 285,
+                "pointer" : true
+              },
+              {
+                "id" : 13899,
+                "name" : "g4_motorHealthState",
+                "type" : 285,
+                "pointer" : true
+              },
+              { "id" : 13900, "name" : "g1_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 13901, "name" : "g2_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 13902, "name" : "g3_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 13903, "name" : "g4_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 22149, "name" : "outC", "type" : 22145, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22150,
+            "name" : "QuadFlightControl_reset_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22151, "name" : "outC", "type" : 22145, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22152,
+            "name" : "QuadFlightControl_init_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22153, "name" : "outC", "type" : 22145, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "MotorControl_QuadFlightControl.h",
+      "implementation_file" : "MotorControl_QuadFlightControl.c",
+      "declarations" : [
+        [
+          "macro",
+          { "id" : 22143, "name" : "SWAN_MotorControl_QuadFlightControl_H_" }
+        ],
+        [
+          "struct",
+          {
+            "id" : 22132,
+            "name" : "outC_MotorControl_QuadFlightControl",
+            "fields" : [
+              { "id" : 22133, "name" : "Ctx_CheckRL", "type" : 22121 },
+              { "id" : 22134, "name" : "Ctx_CheckRR", "type" : 22121 },
+              { "id" : 22135, "name" : "Ctx_CheckFR", "type" : 22121 },
+              { "id" : 22136, "name" : "Ctx_CheckFL", "type" : 22121 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 56,
+            "name" : "MotorControl_QuadFlightControl",
+            "parameters" : [
+              {
+                "id" : 1067,
+                "name" : "attitudeCmd",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              },
+              { "id" : 1068, "name" : "thrustControlCmd", "type" : 21998 },
+              { "id" : 14096, "name" : "g1_motorStates", "type" : 22035 },
+              { "id" : 14097, "name" : "g2_motorStates", "type" : 22035 },
+              { "id" : 14098, "name" : "g3_motorStates", "type" : 22035 },
+              { "id" : 14099, "name" : "g4_motorStates", "type" : 22035 },
+              {
+                "id" : 14100,
+                "name" : "g1_motorHealthStates",
+                "type" : 285,
+                "pointer" : true
+              },
+              {
+                "id" : 14101,
+                "name" : "g2_motorHealthStates",
+                "type" : 285,
+                "pointer" : true
+              },
+              {
+                "id" : 14102,
+                "name" : "g3_motorHealthStates",
+                "type" : 285,
+                "pointer" : true
+              },
+              {
+                "id" : 14103,
+                "name" : "g4_motorHealthStates",
+                "type" : 285,
+                "pointer" : true
+              },
+              { "id" : 14104, "name" : "g1_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 14105, "name" : "g2_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 14106, "name" : "g3_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 14107, "name" : "g4_rotorCmd", "type" : 21998, "pointer" : true },
+              { "id" : 22138, "name" : "outC", "type" : 22132, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22139,
+            "name" : "MotorControl_reset_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22140, "name" : "outC", "type" : 22132, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22141,
+            "name" : "MotorControl_init_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22142, "name" : "outC", "type" : 22132, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "CheckMotorHealth_QuadFlightControl.h",
+      "implementation_file" : "CheckMotorHealth_QuadFlightControl.c",
+      "declarations" : [
+        [
+          "macro",
+          { "id" : 22130, "name" : "SWAN_CheckMotorHealth_QuadFlightControl_H_" }
+        ],
+        [
+          "struct",
+          {
+            "id" : 22121,
+            "name" : "outC_CheckMotorHealth_QuadFlightControl",
+            "fields" : [
+              { "id" : 21947, "name" : "mem1", "type" : 19745 },
+              { "id" : 21948, "name" : "mem2", "type" : 22035 },
+              { "id" : 22122, "name" : "Ctx_Times1", "type" : 22112 },
+              { "id" : 22123, "name" : "Ctx_Times2", "type" : 22112 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 57,
+            "name" : "CheckMotorHealth_QuadFlightControl",
+            "parameters" : [
+              { "id" : 1129, "name" : "isMotorFaulty", "type" : 22035 },
+              { "id" : 1130, "name" : "motorHealthState", "type" : 285, "pointer" : true },
+              { "id" : 22125, "name" : "outC", "type" : 22121, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22126,
+            "name" : "CheckMotorHealth_reset_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22127, "name" : "outC", "type" : 22121, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22128,
+            "name" : "CheckMotorHealth_init_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22129, "name" : "outC", "type" : 22121, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "Times_Flows_ti8.h",
+      "implementation_file" : "Times_Flows_ti8.c",
+      "declarations" : [
+        [ "macro", { "id" : 22119, "name" : "SWAN_Times_Flows_ti8_H_" } ],
+        [
+          "struct",
+          {
+            "id" : 22112,
+            "name" : "outC_Times_Flows_ti8",
+            "fields" : [
+              { "id" : 21986, "name" : "mem1", "type" : 21989 },
+              { "id" : 21987, "name" : "mem2", "type" : 22035 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 19724,
+            "name" : "Times_Flows_ti8",
+            "parameters" : [
+              { "id" : 19733, "name" : "count", "type" : 21989 },
+              { "id" : 19734, "name" : "in", "type" : 22035 },
+              { "id" : 19735, "name" : "out", "type" : 22035, "pointer" : true },
+              { "id" : 22114, "name" : "outC", "type" : 22112, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22115,
+            "name" : "Times_reset_Flows_ti8",
+            "parameters" : [
+              { "id" : 22116, "name" : "outC", "type" : 22112, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22117,
+            "name" : "Times_init_Flows_ti8",
+            "parameters" : [
+              { "id" : 22118, "name" : "outC", "type" : 22112, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "RotateXY_QuadUtils.h",
+      "implementation_file" : "RotateXY_QuadUtils.c",
+      "declarations" : [
+        [ "macro", { "id" : 22110, "name" : "SWAN_RotateXY_QuadUtils_H_" } ],
+        [
+          "function",
+          {
+            "id" : 87,
+            "name" : "RotateXY_QuadUtils",
+            "parameters" : [
+              { "id" : 1644, "name" : "x", "type" : 21998 },
+              { "id" : 1645, "name" : "y", "type" : 21998 },
+              { "id" : 1646, "name" : "a", "type" : 21998 },
+              { "id" : 1647, "name" : "xo", "type" : 21998, "pointer" : true },
+              { "id" : 1648, "name" : "yo", "type" : 21998, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "RotorControl_QuadFlightControl.h",
+      "implementation_file" : "RotorControl_QuadFlightControl.c",
+      "declarations" : [
+        [
+          "macro",
+          { "id" : 22108, "name" : "SWAN_RotorControl_QuadFlightControl_H_" }
+        ],
+        [
+          "function",
+          {
+            "id" : 61,
+            "name" : "RotorControl_QuadFlightControl",
+            "parameters" : [
+              { "id" : 1442, "name" : "u1", "type" : 21998 },
+              { "id" : 1443, "name" : "u2", "type" : 21998 },
+              { "id" : 1444, "name" : "u3", "type" : 21998 },
+              { "id" : 1445, "name" : "u4", "type" : 21998 },
+              { "id" : 1446, "name" : "w1", "type" : 21998, "pointer" : true },
+              { "id" : 1447, "name" : "w2", "type" : 21998, "pointer" : true },
+              { "id" : 1448, "name" : "w3", "type" : 21998, "pointer" : true },
+              { "id" : 1449, "name" : "w4", "type" : 21998, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "Max_Math_Common_Tf32.h",
+      "implementation_file" : "Max_Math_Common_Tf32.c",
+      "declarations" : [
+        [ "macro", { "id" : 22106, "name" : "SWAN_Max_Math_Common_Tf32_H_" } ],
+        [
+          "function",
+          {
+            "id" : 19674,
+            "name" : "Max_Math_Common_Tf32",
+            "return_type" : 21998,
+            "parameters" : [
+              { "id" : 19679, "name" : "x", "type" : 21998 },
+              { "id" : 19680, "name" : "y", "type" : 21998 }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "FlightControl_QuadFlightControl.h",
+      "implementation_file" : "FlightControl_QuadFlightControl.c",
+      "declarations" : [
+        [
+          "macro",
+          { "id" : 22104, "name" : "SWAN_FlightControl_QuadFlightControl_H_" }
+        ],
+        [
+          "struct",
+          {
+            "id" : 22094,
+            "name" : "outC_FlightControl_QuadFlightControl",
+            "fields" : [
+              { "id" : 22095, "name" : "Ctx_PID1", "type" : 22074 },
+              { "id" : 22096, "name" : "Ctx_PID2", "type" : 22074 },
+              { "id" : 22097, "name" : "Ctx_YawControl1", "type" : 22084 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 58,
+            "name" : "FlightControl_QuadFlightControl",
+            "parameters" : [
+              {
+                "id" : 1154,
+                "name" : "desiredAttitude",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              },
+              { "id" : 1155, "name" : "desiredVerticalAcceleration", "type" : 21998 },
+              {
+                "id" : 1156,
+                "name" : "currentAttitude",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              },
+              { "id" : 1157, "name" : "isReset", "type" : 22035 },
+              { "id" : 14283, "name" : "g1_motorHealthState", "type" : 285 },
+              { "id" : 14284, "name" : "g2_motorHealthState", "type" : 285 },
+              { "id" : 14285, "name" : "g3_motorHealthState", "type" : 285 },
+              { "id" : 14286, "name" : "g4_motorHealthState", "type" : 285 },
+              { "id" : 1159, "name" : "attitudeCmd", "type" : 281, "pointer" : true },
+              { "id" : 1160, "name" : "thrustControlCmd", "type" : 21998, "pointer" : true },
+              { "id" : 22099, "name" : "outC", "type" : 22094, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22100,
+            "name" : "FlightControl_reset_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22101, "name" : "outC", "type" : 22094, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22102,
+            "name" : "FlightControl_init_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22103, "name" : "outC", "type" : 22094, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "YawControl_QuadFlightControl.h",
+      "implementation_file" : "YawControl_QuadFlightControl.c",
+      "declarations" : [
+        [ "macro", { "id" : 22092, "name" : "SWAN_YawControl_QuadFlightControl_H_" } ],
+        [
+          "struct",
+          {
+            "id" : 22084,
+            "name" : "outC_YawControl_QuadFlightControl",
+            "fields" : [ { "id" : 22085, "name" : "Ctx_PID1", "type" : 22074 } ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 62,
+            "name" : "YawControl_QuadFlightControl",
+            "parameters" : [
+              { "id" : 1505, "name" : "targetYaw", "type" : 21998 },
+              { "id" : 1506, "name" : "currentYaw", "type" : 21998 },
+              { "id" : 1507, "name" : "targetR", "type" : 21998, "pointer" : true },
+              { "id" : 22087, "name" : "outC", "type" : 22084, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22088,
+            "name" : "YawControl_reset_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22089, "name" : "outC", "type" : 22084, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22090,
+            "name" : "YawControl_init_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22091, "name" : "outC", "type" : 22084, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "PID_QuadFlightControl.h",
+      "implementation_file" : "PID_QuadFlightControl.c",
+      "declarations" : [
+        [ "macro", { "id" : 22082, "name" : "SWAN_PID_QuadFlightControl_H_" } ],
+        [
+          "struct",
+          {
+            "id" : 22074,
+            "name" : "outC_PID_QuadFlightControl",
+            "fields" : [
+              { "id" : 21969, "name" : "mem1", "type" : 21998 },
+              { "id" : 21970, "name" : "mem2", "type" : 22035 },
+              { "id" : 22075, "name" : "Ctx_Integrator1", "type" : 22065 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 59,
+            "name" : "PID_QuadFlightControl",
+            "parameters" : [
+              { "id" : 1319, "name" : "target", "type" : 21998 },
+              { "id" : 1320, "name" : "current", "type" : 21998 },
+              { "id" : 1321, "name" : "kp", "type" : 21998 },
+              { "id" : 1322, "name" : "ki", "type" : 21998 },
+              { "id" : 1323, "name" : "kd", "type" : 21998 },
+              { "id" : 1324, "name" : "errorLim", "type" : 21998 },
+              { "id" : 1325, "name" : "reset", "type" : 22035 },
+              { "id" : 1326, "name" : "control", "type" : 21998, "pointer" : true },
+              { "id" : 22077, "name" : "outC", "type" : 22074, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22078,
+            "name" : "PID_reset_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22079, "name" : "outC", "type" : 22074, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22080,
+            "name" : "PID_init_QuadFlightControl",
+            "parameters" : [
+              { "id" : 22081, "name" : "outC", "type" : 22074, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "Integrator_QuadUtils_Tf32.h",
+      "implementation_file" : "Integrator_QuadUtils_Tf32.c",
+      "declarations" : [
+        [ "macro", { "id" : 22072, "name" : "SWAN_Integrator_QuadUtils_Tf32_H_" } ],
+        [
+          "struct",
+          {
+            "id" : 22065,
+            "name" : "outC_Integrator_QuadUtils_Tf32",
+            "fields" : [
+              { "id" : 19526, "name" : "y", "type" : 21998 },
+              { "id" : 21985, "name" : "mem1", "type" : 22035 }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 19522,
+            "name" : "Integrator_QuadUtils_Tf32",
+            "parameters" : [
+              { "id" : 19524, "name" : "i", "type" : 21998 },
+              { "id" : 19525, "name" : "x", "type" : 21998 },
+              { "id" : 22067, "name" : "outC", "type" : 22065, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22068,
+            "name" : "Integrator_reset_QuadUtils_Tf32",
+            "parameters" : [
+              { "id" : 22069, "name" : "outC", "type" : 22065, "pointer" : true }
+            ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 22070,
+            "name" : "Integrator_init_QuadUtils_Tf32",
+            "parameters" : [
+              { "id" : 22071, "name" : "outC", "type" : 22065, "pointer" : true }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "PitchRollFilter_QuadFlightControl.h",
+      "implementation_file" : "PitchRollFilter_QuadFlightControl.c",
+      "declarations" : [
+        [
+          "macro",
+          { "id" : 22063, "name" : "SWAN_PitchRollFilter_QuadFlightControl_H_" }
+        ],
+        [
+          "function",
+          {
+            "id" : 60,
+            "name" : "PitchRollFilter_QuadFlightControl",
+            "return_type" : 21998,
+            "parameters" : [
+              { "id" : 1407, "name" : "in", "type" : 21998 },
+              { "id" : 1408, "name" : "min", "type" : 21998 },
+              { "id" : 1409, "name" : "max", "type" : 21998 },
+              { "id" : 1410, "name" : "band", "type" : 21998 }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "swan_types.h",
+      "implementation_file" : "swan_types.c",
+      "declarations" : [
+        [ "macro", { "id" : 22006, "name" : "SWAN_TYPES_H_" } ],
+        [
+          "enum",
+          {
+            "id" : 285,
+            "name" : "MotorHealth_QuadTypes",
+            "tag_name" : "swan_tag_MotorHealth_QuadTypes",
+            "values" : [
+              { "id" : 286, "name" : "NOMINAL" },
+              { "id" : 287, "name" : "ABNORMAL" },
+              { "id" : 288, "name" : "FAILURE" }
+            ]
+          }
+        ],
+        [
+          "enum",
+          {
+            "id" : 19745,
+            "name" : "SSM_ST_MotorHealthManagement",
+            "tag_name" : "swan_tag_SSM_ST_MotorHealthManagement",
+            "values" : [
+              { "id" : 19747, "name" : "SSM_st_Nominal_MotorHealthManagement" },
+              { "id" : 19748, "name" : "SSM_st_Abnormal_MotorHealthManagement" },
+              { "id" : 19749, "name" : "SSM_st_Failure_MotorHealthManagement" }
+            ]
+          }
+        ],
+        [
+          "struct",
+          {
+            "id" : 281,
+            "name" : "AttitudeType_QuadTypes",
+            "fields" : [
+              { "id" : 282, "name" : "pitch", "type" : 21998 },
+              { "id" : 283, "name" : "roll", "type" : 21998 },
+              { "id" : 284, "name" : "yaw", "type" : 21998 }
+            ],
+            "copy" : 22059,
+            "equality" : 22060,
+            "equality_use" : "swan_use_AttitudeType_QuadTypes"
+          }
+        ],
+        [ "macro", { "id" : 22059, "name" : "swan_cp_AttitudeType_QuadTypes" } ],
+        [
+          "function",
+          {
+            "id" : 22060,
+            "name" : "swan_eq_AttitudeType_QuadTypes",
+            "return_type" : 22035,
+            "parameters" : [
+              {
+                "id" : 22168,
+                "name" : "swan_c1",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              },
+              {
+                "id" : 22169,
+                "name" : "swan_c2",
+                "type" : 281,
+                "pointer" : true,
+                "const" : true
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "swan_consts.h",
+      "implementation_file" : "swan_consts.c",
+      "declarations" : [
+        [ "macro", { "id" : 22005, "name" : "SWAN_CONSTS_H_" } ],
+        [ "macro", { "id" : 67, "name" : "PI_QuadFlightControl" } ],
+        [ "macro", { "id" : 79, "name" : "T_CYCLE_QuadFlightControl" } ],
+        [ "macro", { "id" : 73, "name" : "ROLL_KP_QuadFlightControl" } ],
+        [ "macro", { "id" : 72, "name" : "ROLL_KI_QuadFlightControl" } ],
+        [ "macro", { "id" : 71, "name" : "ROLL_KD_QuadFlightControl" } ],
+        [ "macro", { "id" : 70, "name" : "PITCH_KP_QuadFlightControl" } ],
+        [ "macro", { "id" : 69, "name" : "PITCH_KI_QuadFlightControl" } ],
+        [ "macro", { "id" : 68, "name" : "PITCH_KD_QuadFlightControl" } ],
+        [ "macro", { "id" : 82, "name" : "YAW_KP_QuadFlightControl" } ],
+        [ "macro", { "id" : 81, "name" : "YAW_KI_QuadFlightControl" } ],
+        [ "macro", { "id" : 80, "name" : "YAW_KD_QuadFlightControl" } ],
+        [ "macro", { "id" : 66, "name" : "MASS_QuadFlightControl" } ],
+        [ "macro", { "id" : 64, "name" : "G_QuadFlightControl" } ],
+        [ "macro", { "id" : 63, "name" : "DRAG_TORQ_QuadFlightControl" } ],
+        [ "macro", { "id" : 75, "name" : "THRUST_COEF_QuadFlightControl" } ],
+        [ "macro", { "id" : 65, "name" : "L_QuadFlightControl" } ],
+        [ "macro", { "id" : 83, "name" : "YAW_LIMIT_QuadFlightControl" } ],
+        [ "macro", { "id" : 74, "name" : "ROTATE_LIMIT_QuadFlightControl" } ],
+        [ "macro", { "id" : 76, "name" : "THRUST_HIGH_LIMIT_QuadFlightControl" } ]
+      ]
+    },
+    {
+      "interface_file" : "swan_sensors.h",
+      "declarations" : [ [ "macro", { "id" : 22004, "name" : "SWAN_SENSORS_H_" } ] ]
+    },
+    {
+      "interface_file" : "swan_imported_functions.h",
+      "declarations" : [
+        [ "macro", { "id" : 22003, "name" : "SWAN_IMPORTED_FUNCTIONS_H_" } ],
+        [
+          "function",
+          {
+            "id" : 274,
+            "name" : "Cosine32_Math_Trigo_StdC",
+            "return_type" : 21998,
+            "parameters" : [ { "id" : 5365, "name" : "x", "type" : 21998 } ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 185,
+            "name" : "Sqrt32_Math_Common",
+            "return_type" : 21998,
+            "parameters" : [ { "id" : 3786, "name" : "x", "type" : 21998 } ]
+          }
+        ],
+        [
+          "function",
+          {
+            "id" : 276,
+            "name" : "Sine32_Math_Trigo_StdC",
+            "return_type" : 21998,
+            "parameters" : [ { "id" : 5369, "name" : "x", "type" : 21998 } ]
+          }
+        ]
+      ]
+    },
+    {
+      "interface_file" : "swan_config.h",
+      "user_provided" : true,
+      "declarations" : [
+        [ "predefined_type", { "id" : 21989, "name" : "swan_int8" } ],
+        [ "predefined_type", { "id" : 21990, "name" : "swan_int16" } ],
+        [ "predefined_type", { "id" : 21991, "name" : "swan_int32" } ],
+        [ "predefined_type", { "id" : 21992, "name" : "swan_int64" } ],
+        [ "predefined_type", { "id" : 21993, "name" : "swan_uint8" } ],
+        [ "predefined_type", { "id" : 21994, "name" : "swan_uint16" } ],
+        [ "predefined_type", { "id" : 21995, "name" : "swan_uint32" } ],
+        [ "predefined_type", { "id" : 21996, "name" : "swan_uint64" } ],
+        [ "predefined_type", { "id" : 21997, "name" : "swan_size" } ],
+        [ "predefined_type", { "id" : 21998, "name" : "swan_float32" } ],
+        [ "predefined_type", { "id" : 21999, "name" : "swan_float64" } ],
+        [ "macro", { "id" : 22015, "name" : "swan_incr" } ],
+        [ "macro", { "id" : 22016, "name" : "swan_cond" } ],
+        [ "macro", { "id" : 22017, "name" : "swan_not" } ],
+        [ "macro", { "id" : 22018, "name" : "swan_xor" } ],
+        [ "macro", { "id" : 22019, "name" : "swan_or" } ],
+        [ "macro", { "id" : 22020, "name" : "swan_and" } ],
+        [ "macro", { "id" : 22021, "name" : "swan_index" } ],
+        [ "macro", { "id" : 22022, "name" : "swan_diff" } ],
+        [ "macro", { "id" : 22023, "name" : "swan_eq" } ],
+        [ "macro", { "id" : 22024, "name" : "swan_assign_union" } ],
+        [ "macro", { "id" : 22025, "name" : "swan_assign_array" } ],
+        [ "macro", { "id" : 22026, "name" : "swan_assign_struct" } ],
+        [ "macro", { "id" : 22027, "name" : "swan_assign" } ],
+        [ "macro", { "id" : 22030, "name" : "swan_guarantee" } ],
+        [ "macro", { "id" : 22031, "name" : "swan_assume" } ],
+        [ "macro", { "id" : 22032, "name" : "swan_assert" } ],
+        [ "macro", { "id" : 22033, "name" : "swan_false" } ],
+        [ "macro", { "id" : 22034, "name" : "swan_true" } ],
+        [ "predefined_type", { "id" : 22035, "name" : "swan_bool" } ],
+        [ "predefined_type", { "id" : 22036, "name" : "swan_char" } ],
+        [ "macro", { "id" : 22037, "name" : "swan_lit_int8" } ],
+        [ "macro", { "id" : 22038, "name" : "swan_lit_int16" } ],
+        [ "macro", { "id" : 22039, "name" : "swan_lit_int32" } ],
+        [ "macro", { "id" : 22040, "name" : "swan_lit_int64" } ],
+        [ "macro", { "id" : 22041, "name" : "swan_lsl_uint8" } ],
+        [ "macro", { "id" : 22042, "name" : "swan_lnot_uint8" } ],
+        [ "macro", { "id" : 22043, "name" : "swan_lit_uint8" } ],
+        [ "macro", { "id" : 22044, "name" : "swan_lsl_uint16" } ],
+        [ "macro", { "id" : 22045, "name" : "swan_lnot_uint16" } ],
+        [ "macro", { "id" : 22046, "name" : "swan_lit_uint16" } ],
+        [ "macro", { "id" : 22047, "name" : "swan_lsl_uint32" } ],
+        [ "macro", { "id" : 22048, "name" : "swan_lnot_uint32" } ],
+        [ "macro", { "id" : 22049, "name" : "swan_lit_uint32" } ],
+        [ "macro", { "id" : 22050, "name" : "swan_lsl_uint64" } ],
+        [ "macro", { "id" : 22051, "name" : "swan_lnot_uint64" } ],
+        [ "macro", { "id" : 22052, "name" : "swan_lit_uint64" } ],
+        [ "macro", { "id" : 22053, "name" : "swan_lit_size" } ],
+        [ "macro", { "id" : 22054, "name" : "swan_lit_float32" } ],
+        [ "macro", { "id" : 22055, "name" : "swan_lit_float64" } ],
+        [ "macro", { "id" : 22056, "name" : "swan_diff_char" } ],
+        [ "macro", { "id" : 22057, "name" : "swan_eq_char" } ],
+        [ "macro", { "id" : 22058, "name" : "swan_lit_char" } ]
+      ]
+    }
+  ],
+  "mapping" : [
+    { "model_id" : 8, "code_id" : 22035 },
+    { "model_id" : 9, "code_id" : 22036 },
+    { "model_id" : 10, "code_id" : 21989 },
+    { "model_id" : 11, "code_id" : 21990 },
+    { "model_id" : 12, "code_id" : 21991 },
+    { "model_id" : 13, "code_id" : 21992 },
+    { "model_id" : 14, "code_id" : 21993 },
+    { "model_id" : 15, "code_id" : 21994 },
+    { "model_id" : 16, "code_id" : 21995 },
+    { "model_id" : 17, "code_id" : 21996 },
+    { "model_id" : 18, "code_id" : 21998 },
+    { "model_id" : 19, "code_id" : 21999 },
+    { "model_id" : 55, "code_id" : 55, "role" : "CycleMethod" },
+    { "model_id" : 55, "code_id" : 22145, "role" : "ContextType" },
+    { "model_id" : 55, "code_id" : 22150, "role" : "ResetMethod" },
+    { "model_id" : 55, "code_id" : 22152, "role" : "InitMethod" },
+    { "model_id" : 56, "code_id" : 56, "role" : "CycleMethod" },
+    { "model_id" : 56, "code_id" : 22132, "role" : "ContextType" },
+    { "model_id" : 56, "code_id" : 22139, "role" : "ResetMethod" },
+    { "model_id" : 56, "code_id" : 22141, "role" : "InitMethod" },
+    { "model_id" : 57, "code_id" : 57, "role" : "CycleMethod" },
+    { "model_id" : 57, "code_id" : 22121, "role" : "ContextType" },
+    { "model_id" : 57, "code_id" : 22126, "role" : "ResetMethod" },
+    { "model_id" : 57, "code_id" : 22128, "role" : "InitMethod" },
+    { "model_id" : 58, "code_id" : 58, "role" : "CycleMethod" },
+    { "model_id" : 58, "code_id" : 22094, "role" : "ContextType" },
+    { "model_id" : 58, "code_id" : 22100, "role" : "ResetMethod" },
+    { "model_id" : 58, "code_id" : 22102, "role" : "InitMethod" },
+    { "model_id" : 59, "code_id" : 59, "role" : "CycleMethod" },
+    { "model_id" : 59, "code_id" : 22074, "role" : "ContextType" },
+    { "model_id" : 59, "code_id" : 22078, "role" : "ResetMethod" },
+    { "model_id" : 59, "code_id" : 22080, "role" : "InitMethod" },
+    { "model_id" : 60, "code_id" : 60, "role" : "CycleMethod" },
+    { "model_id" : 61, "code_id" : 61, "role" : "CycleMethod" },
+    { "model_id" : 62, "code_id" : 62, "role" : "CycleMethod" },
+    { "model_id" : 62, "code_id" : 22084, "role" : "ContextType" },
+    { "model_id" : 62, "code_id" : 22088, "role" : "ResetMethod" },
+    { "model_id" : 62, "code_id" : 22090, "role" : "InitMethod" },
+    { "model_id" : 63, "code_id" : 63 },
+    { "model_id" : 64, "code_id" : 64 },
+    { "model_id" : 65, "code_id" : 65 },
+    { "model_id" : 66, "code_id" : 66 },
+    { "model_id" : 67, "code_id" : 67 },
+    { "model_id" : 68, "code_id" : 68 },
+    { "model_id" : 69, "code_id" : 69 },
+    { "model_id" : 70, "code_id" : 70 },
+    { "model_id" : 71, "code_id" : 71 },
+    { "model_id" : 72, "code_id" : 72 },
+    { "model_id" : 73, "code_id" : 73 },
+    { "model_id" : 74, "code_id" : 74 },
+    { "model_id" : 75, "code_id" : 75 },
+    { "model_id" : 76, "code_id" : 76 },
+    { "model_id" : 79, "code_id" : 79 },
+    { "model_id" : 80, "code_id" : 80 },
+    { "model_id" : 81, "code_id" : 81 },
+    { "model_id" : 82, "code_id" : 82 },
+    { "model_id" : 83, "code_id" : 83 },
+    { "model_id" : 87, "code_id" : 87, "role" : "CycleMethod" },
+    { "model_id" : 185, "code_id" : 185, "role" : "CycleMethod" },
+    { "model_id" : 274, "code_id" : 274, "role" : "CycleMethod" },
+    { "model_id" : 276, "code_id" : 276, "role" : "CycleMethod" },
+    { "model_id" : 281, "code_id" : 281 },
+    { "model_id" : 282, "code_id" : 282 },
+    { "model_id" : 283, "code_id" : 283 },
+    { "model_id" : 284, "code_id" : 284 },
+    { "model_id" : 285, "code_id" : 285 },
+    { "model_id" : 286, "code_id" : 286 },
+    { "model_id" : 287, "code_id" : 287 },
+    { "model_id" : 288, "code_id" : 288 },
+    { "model_id" : 1032, "code_id" : 1032 },
+    { "model_id" : 1033, "code_id" : 1033 },
+    { "model_id" : 1034, "code_id" : 1034 },
+    { "model_id" : 1035, "code_id" : 1035 },
+    { "model_id" : 1067, "code_id" : 1067 },
+    { "model_id" : 1068, "code_id" : 1068 },
+    { "model_id" : 1129, "code_id" : 1129 },
+    { "model_id" : 1130, "code_id" : 1130 },
+    { "model_id" : 1154, "code_id" : 1154 },
+    { "model_id" : 1155, "code_id" : 1155 },
+    { "model_id" : 1156, "code_id" : 1156 },
+    { "model_id" : 1157, "code_id" : 1157 },
+    { "model_id" : 1159, "code_id" : 1159 },
+    { "model_id" : 1160, "code_id" : 1160 },
+    { "model_id" : 1319, "code_id" : 1319 },
+    { "model_id" : 1320, "code_id" : 1320 },
+    { "model_id" : 1321, "code_id" : 1321 },
+    { "model_id" : 1322, "code_id" : 1322 },
+    { "model_id" : 1323, "code_id" : 1323 },
+    { "model_id" : 1324, "code_id" : 1324 },
+    { "model_id" : 1325, "code_id" : 1325 },
+    { "model_id" : 1326, "code_id" : 1326 },
+    { "model_id" : 1407, "code_id" : 1407 },
+    { "model_id" : 1408, "code_id" : 1408 },
+    { "model_id" : 1409, "code_id" : 1409 },
+    { "model_id" : 1410, "code_id" : 1410 },
+    { "model_id" : 1442, "code_id" : 1442 },
+    { "model_id" : 1443, "code_id" : 1443 },
+    { "model_id" : 1444, "code_id" : 1444 },
+    { "model_id" : 1445, "code_id" : 1445 },
+    { "model_id" : 1446, "code_id" : 1446 },
+    { "model_id" : 1447, "code_id" : 1447 },
+    { "model_id" : 1448, "code_id" : 1448 },
+    { "model_id" : 1449, "code_id" : 1449 },
+    { "model_id" : 1505, "code_id" : 1505 },
+    { "model_id" : 1506, "code_id" : 1506 },
+    { "model_id" : 1507, "code_id" : 1507 },
+    { "model_id" : 1644, "code_id" : 1644 },
+    { "model_id" : 1645, "code_id" : 1645 },
+    { "model_id" : 1646, "code_id" : 1646 },
+    { "model_id" : 1647, "code_id" : 1647 },
+    { "model_id" : 1648, "code_id" : 1648 },
+    { "model_id" : 3786, "code_id" : 3786 },
+    { "model_id" : 5365, "code_id" : 5365 },
+    { "model_id" : 5369, "code_id" : 5369 },
+    { "model_id" : 13892, "code_id" : 13892 },
+    { "model_id" : 13893, "code_id" : 13893 },
+    { "model_id" : 13894, "code_id" : 13894 },
+    { "model_id" : 13895, "code_id" : 13895 },
+    { "model_id" : 13896, "code_id" : 13896 },
+    { "model_id" : 13897, "code_id" : 13897 },
+    { "model_id" : 13898, "code_id" : 13898 },
+    { "model_id" : 13899, "code_id" : 13899 },
+    { "model_id" : 13900, "code_id" : 13900 },
+    { "model_id" : 13901, "code_id" : 13901 },
+    { "model_id" : 13902, "code_id" : 13902 },
+    { "model_id" : 13903, "code_id" : 13903 },
+    { "model_id" : 14096, "code_id" : 14096 },
+    { "model_id" : 14097, "code_id" : 14097 },
+    { "model_id" : 14098, "code_id" : 14098 },
+    { "model_id" : 14099, "code_id" : 14099 },
+    { "model_id" : 14100, "code_id" : 14100 },
+    { "model_id" : 14101, "code_id" : 14101 },
+    { "model_id" : 14102, "code_id" : 14102 },
+    { "model_id" : 14103, "code_id" : 14103 },
+    { "model_id" : 14104, "code_id" : 14104 },
+    { "model_id" : 14105, "code_id" : 14105 },
+    { "model_id" : 14106, "code_id" : 14106 },
+    { "model_id" : 14107, "code_id" : 14107 },
+    { "model_id" : 14283, "code_id" : 14283 },
+    { "model_id" : 14284, "code_id" : 14284 },
+    { "model_id" : 14285, "code_id" : 14285 },
+    { "model_id" : 14286, "code_id" : 14286 },
+    { "model_id" : 19522, "code_id" : 19522, "role" : "CycleMethod" },
+    { "model_id" : 19522, "code_id" : 22065, "role" : "ContextType" },
+    { "model_id" : 19522, "code_id" : 22068, "role" : "ResetMethod" },
+    { "model_id" : 19522, "code_id" : 22070, "role" : "InitMethod" },
+    { "model_id" : 19524, "code_id" : 19524 },
+    { "model_id" : 19525, "code_id" : 19525 },
+    { "model_id" : 19526, "code_id" : 19526 },
+    { "model_id" : 19674, "code_id" : 19674, "role" : "CycleMethod" },
+    { "model_id" : 19679, "code_id" : 19679 },
+    { "model_id" : 19680, "code_id" : 19680 },
+    { "model_id" : 19724, "code_id" : 19724, "role" : "CycleMethod" },
+    { "model_id" : 19724, "code_id" : 22112, "role" : "ContextType" },
+    { "model_id" : 19724, "code_id" : 22115, "role" : "ResetMethod" },
+    { "model_id" : 19724, "code_id" : 22117, "role" : "InitMethod" },
+    { "model_id" : 19733, "code_id" : 19733 },
+    { "model_id" : 19734, "code_id" : 19734 },
+    { "model_id" : 19735, "code_id" : 19735 }
+  ]
+}

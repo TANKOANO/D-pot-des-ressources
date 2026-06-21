@@ -1,0 +1,39 @@
+{
+  "files": [
+    "..\\..\\..\\ControlPanel_ScadeOneCosimulation\\assets\\ControlPanel.swan",
+    "..\\..\\..\\VTOLDisplay_ScadeOneCosimulation\\assets\\VTOLDisplay.swan",
+    "..\\..\\assets\\QuadFlightControl.swan",
+    "..\\..\\assets\\QuadTypes.swani",
+    "..\\..\\assets\\QuadUtils.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Check\\assets\\Harness-Check.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Check\\assets\\Harness-Check.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Float\\assets\\Float.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Float\\assets\\Float.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Flows\\assets\\Flows.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Flows\\assets\\Flows.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Common.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Common.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Complex.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Complex.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Trigo-Common.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Trigo-Cordic.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Trigo-Cordic.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Trigo-StdC.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Math\\assets\\Math-Trigo-StdC.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Sources\\assets\\Harness-Sources-N.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Sources\\assets\\Harness-Sources-N.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Sources\\assets\\Harness-Sources-T.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Sources\\assets\\Harness-Sources-T.swani",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Time\\assets\\Time.swan",
+    "C:\\Program Files\\Ansys Inc\\v261\\Scade One Student\\Scade One\\libraries\\Time\\assets\\Time.swani"
+  ],
+  "roots": [
+    "QuadFlightControl::QuadFlightControl"
+  ],
+  "target_dir": "out",
+  "target": "C",
+  "keep_assertions": false,
+  "metadata": {
+    "date": "2026-05-12T11:46:34.7058795Z"
+  }
+}

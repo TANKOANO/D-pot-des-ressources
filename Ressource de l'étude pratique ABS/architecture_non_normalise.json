@@ -1,0 +1,346 @@
+{
+    "architecture": {
+        "system_name": "ABS_Embedded_System",
+
+        "processors": [
+            {
+                "name": "MainControlUnit",
+                "scheduler": "RATE_MONOTONIC_PROTOCOL",
+                "clock_period_ms": 1,
+                "mips_capacity": 1000,
+                "bus_binding": "VehicleBus"
+            }
+        ],
+
+        "memories": [
+            {
+                "name": "SystemMemory",
+                "size_kb": 8192,
+                "bus_binding": "VehicleBus"
+            }
+        ],
+
+        "buses": [
+            {
+                "name": "VehicleBus"
+            }
+        ],
+
+        "devices": [
+            {
+                "name": "WheelSpeedSensor",
+                "category": "sensor",
+                "requires_bus_access": true,
+                "bus_binding": "VehicleBus",
+                "outputs": [
+                    {
+                        "name": "wheel_speed",
+                        "data_type": "Speed"
+                    }
+                ]
+            },
+            {
+                "name": "BrakePressureActuator",
+                "category": "actuator",
+                "requires_bus_access": true,
+                "bus_binding": "VehicleBus",
+                "inputs": [
+                    {
+                        "name": "brake_pressure_command",
+                        "data_type": "Pressure"
+                    }
+                ]
+            }
+        ],
+
+        "processes": [
+            {
+                "name": "ABSControlProcess",
+                "processor_binding": "MainControlUnit",
+                "memory_binding": "SystemMemory",
+                "inputs": [
+                    {
+                        "name": "wheel_speed_input",
+                        "data_type": "Speed"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "brake_pressure_output",
+                        "data_type": "Pressure"
+                    }
+                ],
+                "threads": [
+                    {
+                        "name": "WheelSpeedMonitorThread",
+                        "subprogram": "ReadWheelSpeed",
+                        "periodic": true,
+                        "period_ms": 10,
+                        "deadline_ms": 10,
+                        "priority": 3,
+                        "inputs": [
+                            {
+                                "name": "wheel_speed",
+                                "data_type": "Speed"
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "name": "processed_speed",
+                                "data_type": "Speed"
+                            }
+                        ],
+                        "compute_execution_time_ms": 2
+                    },
+                    {
+                        "name": "LockDetectionThread",
+                        "subprogram": "DetectLock",
+                        "periodic": true,
+                        "period_ms": 20,
+                        "deadline_ms": 20,
+                        "priority": 2,
+                        "inputs": [
+                            {
+                                "name": "processed_speed",
+                                "data_type": "Speed"
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "name": "lock_detection_result",
+                                "data_type": "Boolean"
+                            }
+                        ],
+                        "compute_execution_time_ms": 5
+                    },
+                    {
+                        "name": "BrakePressureControlThread",
+                        "subprogram": "AdjustBrakePressure",
+                        "periodic": true,
+                        "period_ms": 15,
+                        "deadline_ms": 15,
+                        "priority": 1,
+                        "inputs": [
+                            {
+                                "name": "lock_detection_result",
+                                "data_type": "Boolean"
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "name": "brake_pressure_command",
+                                "data_type": "Pressure"
+                            }
+                        ],
+                        "compute_execution_time_ms": 3
+                    }
+                ],
+                "connections": [
+                    {
+                        "source": "WheelSpeedMonitorThread.processed_speed",
+                        "destination": "LockDetectionThread.processed_speed"
+                    },
+                    {
+                        "source": "LockDetectionThread.lock_detection_result",
+                        "destination": "BrakePressureControlThread.lock_detection_result"
+                    }
+                ],
+                "process_port_connections": [
+                    {
+                        "process_port": "wheel_speed_input",
+                        "thread_component": "WheelSpeedMonitorThread",
+                        "thread_port": "wheel_speed",
+                        "direction": "process_to_thread"
+                    },
+                    {
+                        "process_port": "brake_pressure_output",
+                        "thread_component": "BrakePressureControlThread",
+                        "thread_port": "brake_pressure_command",
+                        "direction": "thread_to_process"
+                    }
+                ]
+            }
+        ],
+
+        "subprograms": [
+            {
+                "name": "ReadWheelSpeed",
+                "language": "C",
+                "parameters": [
+                    {
+                        "name": "wheel_speed",
+                        "data_type": "Speed",
+                        "direction": "in"
+                    },
+                    {
+                        "name": "processed_speed",
+                        "data_type": "Speed",
+                        "direction": "out"
+                    }
+                ]
+            },
+            {
+                "name": "DetectLock",
+                "language": "C",
+                "parameters": [
+                    {
+                        "name": "processed_speed",
+                        "data_type": "Speed",
+                        "direction": "in"
+                    },
+                    {
+                        "name": "lock_detection_result",
+                        "data_type": "Boolean",
+                        "direction": "out"
+                    }
+                ]
+            },
+            {
+                "name": "AdjustBrakePressure",
+                "language": "C",
+                "parameters": [
+                    {
+                        "name": "lock_detection_result",
+                        "data_type": "Boolean",
+                        "direction": "in"
+                    },
+                    {
+                        "name": "brake_pressure_command",
+                        "data_type": "Pressure",
+                        "direction": "out"
+                    }
+                ]
+            }
+        ],
+
+        "connections": [
+            {
+                "source": "WheelSpeedSensor.wheel_speed",
+                "destination": "ABSControlProcess.wheel_speed_input"
+            },
+            {
+                "source": "ABSControlProcess.brake_pressure_output",
+                "destination": "BrakePressureActuator.brake_pressure_command"
+            }
+        ],
+
+        "system_connections": [
+            {
+                "source": "MainControlUnit",
+                "destination": "VehicleBus",
+                "kind": "bus_access"
+            },
+            {
+                "source": "SystemMemory",
+                "destination": "VehicleBus",
+                "kind": "bus_access"
+            },
+            {
+                "source": "WheelSpeedSensor",
+                "destination": "VehicleBus",
+                "kind": "bus_access"
+            },
+            {
+                "source": "BrakePressureActuator",
+                "destination": "VehicleBus",
+                "kind": "bus_access"
+            }
+        ],
+
+        "flows": [
+            {
+                "name": "WheelSpeedFlow",
+                "kind": "source",
+                "source": "WheelSpeedSensor.wheel_speed"
+            },
+            {
+                "name": "BrakePressureFlow",
+                "kind": "sink",
+                "destination": "BrakePressureActuator.brake_pressure_command"
+            },
+            {
+                "name": "ABSControlFlow",
+                "kind": "path",
+                "source": "WheelSpeedSensor.wheel_speed",
+                "destination": "BrakePressureActuator.brake_pressure_command"
+            }
+        ],
+
+        "end_to_end_flows": [
+            {
+                "name": "ABS_EndToEndFlow",
+                "flow_sequence": [
+                    {
+                        "component": "WheelSpeedSensor",
+                        "port": "wheel_speed",
+                        "flow_type": "source"
+                    },
+                    {
+                        "component": "ABSControlProcess",
+                        "port": "wheel_speed_input",
+                        "flow_type": "path"
+                    },
+                    {
+                        "component": "WheelSpeedMonitorThread",
+                        "port": "wheel_speed",
+                        "flow_type": "subprogram"
+                    },
+                    {
+                        "component": "WheelSpeedMonitorThread",
+                        "port": "processed_speed",
+                        "flow_type": "subprogram"
+                    },
+                    {
+                        "component": "LockDetectionThread",
+                        "port": "processed_speed",
+                        "flow_type": "subprogram"
+                    },
+                    {
+                        "component": "LockDetectionThread",
+                        "port": "lock_detection_result",
+                        "flow_type": "subprogram"
+                    },
+                    {
+                        "component": "BrakePressureControlThread",
+                        "port": "lock_detection_result",
+                        "flow_type": "subprogram"
+                    },
+                    {
+                        "component": "BrakePressureControlThread",
+                        "port": "brake_pressure_command",
+                        "flow_type": "subprogram"
+                    },
+                    {
+                        "component": "ABSControlProcess",
+                        "port": "brake_pressure_output",
+                        "flow_type": "path"
+                    },
+                    {
+                        "component": "BrakePressureActuator",
+                        "port": "brake_pressure_command",
+                        "flow_type": "sink"
+                    }
+                ]
+            }
+        ]
+    },
+
+    "assumptions": [
+        "Un seul capteur de vitesse générique est utilisé pour simplifier l'architecture, bien que 4 capteurs soient typiquement nécessaires dans un système ABS réel.",
+        "Les périodes des threads ont été choisies pour respecter les contraintes temps réel critiques, mais pourraient être ajustées en fonction de tests supplémentaires.",
+        "Les sous-programmes sont implémentés en C pour des raisons de performance et de déterminisme.",
+        "Le mécanisme de repli en cas de panne matérielle (ex: défaillance du capteur) n'est pas modélisé en détail mais pourrait être ajouté via un thread de surveillance supplémentaire."
+    ],
+
+    "corrections": [
+        "Les priorités des threads ont été ajustées pour respecter l'ordre Rate Monotonic (période la plus courte = priorité la plus haute).",
+        "Les connexions entre threads ont été explicitement définies pour garantir un flux de données déterministe."
+    ],
+
+    "warnings": [
+        "La simplification à un seul capteur de vitesse peut ne pas être suffisante pour un système ABS réel, où chaque roue doit être surveillée individuellement.",
+        "Les mécanismes de sécurité avancés (ex: désactivation progressive de l'ABS) ne sont pas modélisés en détail et devraient être ajoutés pour une implémentation complète."
+    ],
+
+    "impossible_requests": []
+}

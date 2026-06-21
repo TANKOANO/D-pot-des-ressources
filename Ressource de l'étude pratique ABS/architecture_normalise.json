@@ -1,0 +1,461 @@
+{
+    "system\_name": "ABS\_Embedded\_System",
+    "processors": [
+        {
+            "name": "MainControlUnit",
+            "scheduler": "POSIX\_1003\_HIGHEST\_PRIORITY\_FIRST\_PROTOCOL",
+            "clock\_period\_ms": 1.0,
+            "mips\_capacity": 1000,
+            "bus\_binding": "VehicleBus",
+            "properties": {}
+        }
+    ],
+    "memories": [
+        {
+            "name": "SystemMemory",
+            "size\_kb": 8192,
+            "bus\_binding": "VehicleBus",
+            "properties": {}
+        }
+    ],
+    "buses": [
+        {
+            "name": "VehicleBus",
+            "properties": {}
+        }
+    ],
+    "devices": [
+        {
+            "name": "WheelSpeedSensor",
+            "requires\_bus\_access": true,
+            "category": "sensor",
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "wheel\_speed",
+                    "data\_type": "Speed",
+                    "properties": {}
+                }
+            ],
+            "bus\_binding": "VehicleBus",
+            "flows": [],
+            "properties": {}
+        },
+        {
+            "name": "BrakePressureActuator",
+            "requires\_bus\_access": true,
+            "category": "actuator",
+            "inputs": [
+                {
+                    "name": "brake\_pressure\_command",
+                    "data\_type": "Pressure",
+                    "properties": {}
+                }
+            ],
+            "outputs": [],
+            "bus\_binding": "VehicleBus",
+            "flows": [],
+            "properties": {}
+        },
+        {
+            "name": "Output\_processed\_speed",
+            "requires\_bus\_access": true,
+            "category": "actuator",
+            "inputs": [
+                {
+                    "name": "processed\_speed\_in",
+                    "data\_type": "Speed",
+                    "properties": {}
+                }
+            ],
+            "outputs": [],
+            "bus\_binding": "VehicleBus",
+            "flows": [],
+            "properties": {}
+        },
+        {
+            "name": "Output\_lock\_detection\_result",
+            "requires\_bus\_access": true,
+            "category": "actuator",
+            "inputs": [
+                {
+                    "name": "lock\_detection\_result\_in",
+                    "data\_type": "Boolean",
+                    "properties": {}
+                }
+            ],
+            "outputs": [],
+            "bus\_binding": "VehicleBus",
+            "flows": [],
+            "properties": {}
+        }
+    ],
+    "processes": [
+        {
+            "name": "ABSControlProcess",
+            "processor\_binding": "MainControlUnit",
+            "memory\_binding": "SystemMemory",
+            "inputs": [
+                {
+                    "name": "wheel\_speed\_input",
+                    "data\_type": "Speed",
+                    "properties": {}
+                },
+                {
+                    "name": "processed\_speed",
+                    "data\_type": "Speed",
+                    "properties": {}
+                },
+                {
+                    "name": "lock\_detection\_result",
+                    "data\_type": "Boolean",
+                    "properties": {}
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "brake\_pressure\_output",
+                    "data\_type": "Pressure",
+                    "properties": {}
+                },
+                {
+                    "name": "processed\_speed",
+                    "data\_type": "Speed",
+                    "properties": {}
+                },
+                {
+                    "name": "lock\_detection\_result",
+                    "data\_type": "Boolean",
+                    "properties": {}
+                }
+            ],
+            "threads": [
+                {
+                    "name": "WheelSpeedMonitorThread",
+                    "instance\_name": null,
+                    "subprogram": "ReadWheelSpeed",
+                    "periodic": true,
+                    "period\_ms": 10,
+                    "deadline\_ms": 10,
+                    "priority": 3,
+                    "inputs": [
+                        {
+                            "name": "wheel\_speed",
+                            "data\_type": "Speed",
+                            "properties": {}
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "processed\_speed",
+                            "data\_type": "Speed",
+                            "properties": {}
+                        }
+                    ],
+                    "compute\_execution\_time\_ms": 2,
+                    "stack\_size\_kb": null,
+                    "dispatch\_offset\_ms": null,
+                    "dequeue\_protocol": null,
+                    "data\_accesses": []
+                },
+                {
+                    "name": "LockDetectionThread",
+                    "instance\_name": null,
+                    "subprogram": "DetectLock",
+                    "periodic": true,
+                    "period\_ms": 20,
+                    "deadline\_ms": 20,
+                    "priority": 2,
+                    "inputs": [
+                        {
+                            "name": "processed\_speed",
+                            "data\_type": "Speed",
+                            "properties": {}
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "lock\_detection\_result",
+                            "data\_type": "Boolean",
+                            "properties": {}
+                        }
+                    ],
+                    "compute\_execution\_time\_ms": 5,
+                    "stack\_size\_kb": null,
+                    "dispatch\_offset\_ms": null,
+                    "dequeue\_protocol": null,
+                    "data\_accesses": []
+                },
+                {
+                    "name": "BrakePressureControlThread",
+                    "instance\_name": null,
+                    "subprogram": "AdjustBrakePressure",
+                    "periodic": true,
+                    "period\_ms": 15,
+                    "deadline\_ms": 15,
+                    "priority": 1,
+                    "inputs": [
+                        {
+                            "name": "lock\_detection\_result",
+                            "data\_type": "Boolean",
+                            "properties": {}
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "brake\_pressure\_command",
+                            "data\_type": "Pressure",
+                            "properties": {}
+                        }
+                    ],
+                    "compute\_execution\_time\_ms": 3,
+                    "stack\_size\_kb": null,
+                    "dispatch\_offset\_ms": null,
+                    "dequeue\_protocol": null,
+                    "data\_accesses": []
+                }
+            ],
+            "connections": [
+                {
+                    "name": "direct\_conn\_wheelspeedmonitorthread\_lockdetectionthread",
+                    "source\_component": "WheelSpeedMonitorThread",
+                    "source\_port": "processed\_speed",
+                    "destination\_component": "LockDetectionThread",
+                    "destination\_port": "processed\_speed",
+                    "bus\_binding": null,
+                    "properties": {}
+                },
+                {
+                    "name": "direct\_conn\_lockdetectionthread\_brakepressurecontrolthread",
+                    "source\_component": "LockDetectionThread",
+                    "source\_port": "lock\_detection\_result",
+                    "destination\_component": "BrakePressureControlThread",
+                    "destination\_port": "lock\_detection\_result",
+                    "bus\_binding": null,
+                    "properties": {}
+                }
+            ],
+            "flows": [],
+            "process\_port\_connections": [
+                {
+                    "name": "ppc\_0",
+                    "process\_port": "wheel\_speed\_input",
+                    "thread\_component": "WheelSpeedMonitorThread",
+                    "thread\_port": "wheel\_speed",
+                    "direction": "process\_to\_thread",
+                    "flows": [],
+                    "properties": {}
+                },
+                {
+                    "name": "ppc\_1",
+                    "process\_port": "brake\_pressure\_output",
+                    "thread\_component": "BrakePressureControlThread",
+                    "thread\_port": "brake\_pressure\_command",
+                    "direction": "thread\_to\_process",
+                    "flows": [],
+                    "properties": {}
+                },
+                {
+                    "name": "ppc\_fix\_wheelspeedmonitorthread\_processed\_speed",
+                    "process\_port": "processed\_speed",
+                    "thread\_component": "WheelSpeedMonitorThread",
+                    "thread\_port": "processed\_speed",
+                    "direction": "thread\_to\_process",
+                    "flows": [],
+                    "properties": {}
+                },
+                {
+                    "name": "ppc\_fix\_lockdetectionthread\_lock\_detection\_result",
+                    "process\_port": "lock\_detection\_result",
+                    "thread\_component": "LockDetectionThread",
+                    "thread\_port": "lock\_detection\_result",
+                    "direction": "thread\_to\_process",
+                    "flows": [],
+                    "properties": {}
+                },
+                {
+                    "name": "ppc\_lockdetectionthread\_processed\_speed",
+                    "process\_port": "processed\_speed",
+                    "thread\_component": "LockDetectionThread",
+                    "thread\_port": "processed\_speed",
+                    "direction": "process\_to\_thread",
+                    "flows": [],
+                    "properties": {}
+                },
+                {
+                    "name": "ppc\_brakepressurecontrolthread\_lock\_detection\_result",
+                    "process\_port": "lock\_detection\_result",
+                    "thread\_component": "BrakePressureControlThread",
+                    "thread\_port": "lock\_detection\_result",
+                    "direction": "process\_to\_thread",
+                    "flows": [],
+                    "properties": {}
+                }
+            ],
+            "shared\_data": []
+        }
+    ],
+    "subprograms": [
+        {
+            "name": "ReadWheelSpeed",
+            "language": "C",
+            "parameters": [
+                {
+                    "name": "wheel\_speed",
+                    "data\_type": "Speed",
+                    "direction": "in"
+                },
+                {
+                    "name": "processed\_speed",
+                    "data\_type": "Speed",
+                    "direction": "out"
+                }
+            ],
+            "properties": {}
+        },
+        {
+            "name": "DetectLock",
+            "language": "C",
+            "parameters": [
+                {
+                    "name": "processed\_speed",
+                    "data\_type": "Speed",
+                    "direction": "in"
+                },
+                {
+                    "name": "lock\_detection\_result",
+                    "data\_type": "Boolean",
+                    "direction": "out"
+                }
+            ],
+            "properties": {}
+        },
+        {
+            "name": "AdjustBrakePressure",
+            "language": "C",
+            "parameters": [
+                {
+                    "name": "lock\_detection\_result",
+                    "data\_type": "Boolean",
+                    "direction": "in"
+                },
+                {
+                    "name": "brake\_pressure\_command",
+                    "data\_type": "Pressure",
+                    "direction": "out"
+                }
+            ],
+            "properties": {}
+        }
+    ],
+    "connections": [],
+    "invalid\_connections": [],
+    "system\_connections": [
+        {
+            "name": "auto\_conn\_abscontrolprocess\_brake\_pressure\_output\_0",
+            "source\_component": "ABSControlProcess",
+            "source\_port": "brake\_pressure\_output",
+            "destination\_component": "BrakePressureActuator",
+            "destination\_port": "brake\_pressure\_command"
+        },
+        {
+            "name": "auto\_conn\_wheelspeedsensor\_wheel\_speed\_input\_1",
+            "source\_component": "WheelSpeedSensor",
+            "source\_port": "wheel\_speed",
+            "destination\_component": "ABSControlProcess",
+            "destination\_port": "wheel\_speed\_input"
+        },
+        {
+            "name": "auto\_conn\_abscontrolprocess\_processed\_speed\_0",
+            "source\_component": "ABSControlProcess",
+            "source\_port": "processed\_speed",
+            "destination\_component": "Output\_processed\_speed",
+            "destination\_port": "processed\_speed\_in"
+        },
+        {
+            "name": "auto\_conn\_abscontrolprocess\_lock\_detection\_result\_1",
+            "source\_component": "ABSControlProcess",
+            "source\_port": "lock\_detection\_result",
+            "destination\_component": "Output\_lock\_detection\_result",
+            "destination\_port": "lock\_detection\_result\_in"
+        }
+    ],
+    "end\_to\_end\_flows": [
+        {
+            "name": "ABS\_EndToEndFlow",
+            "flow\_sequence": [
+                {
+                    "component": "WheelSpeedSensor",
+                    "flow\_type": "source",
+                    "port": "wheel\_speed",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "ABSControlProcess",
+                    "flow\_type": "path",
+                    "port": "wheel\_speed\_input",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "WheelSpeedMonitorThread",
+                    "flow\_type": "subprogram",
+                    "port": "wheel\_speed",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "WheelSpeedMonitorThread",
+                    "flow\_type": "subprogram",
+                    "port": "processed\_speed",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "LockDetectionThread",
+                    "flow\_type": "subprogram",
+                    "port": "processed\_speed",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "LockDetectionThread",
+                    "flow\_type": "subprogram",
+                    "port": "lock\_detection\_result",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "BrakePressureControlThread",
+                    "flow\_type": "subprogram",
+                    "port": "lock\_detection\_result",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "BrakePressureControlThread",
+                    "flow\_type": "subprogram",
+                    "port": "brake\_pressure\_command",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "ABSControlProcess",
+                    "flow\_type": "path",
+                    "port": "brake\_pressure\_output",
+                    "connection": null,
+                    "subprogram": null
+                },
+                {
+                    "component": "BrakePressureActuator",
+                    "flow\_type": "sink",
+                    "port": "brake\_pressure\_command",
+                    "connection": null,
+                    "subprogram": null
+                }
+            ],
+            "properties": {}
+        }
+    ]
+}

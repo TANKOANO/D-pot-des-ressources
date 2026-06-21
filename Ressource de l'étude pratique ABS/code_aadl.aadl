@@ -1,0 +1,429 @@
+package ABS_Embedded_System
+public
+with Data_Model;
+
+with Deployment;
+
+    --------------------------------------------------
+    -- DATA TYPES
+    --------------------------------------------------
+
+        data Boolean
+            properties
+                Data_Model::Data_Representation =>
+                    Boolean;
+        end Boolean;
+
+        data implementation Boolean.impl
+        end Boolean.impl;
+
+        data Pressure
+            properties
+                Data_Model::Data_Representation =>
+                    Float;
+        end Pressure;
+
+        data implementation Pressure.impl
+        end Pressure.impl;
+
+        data Speed
+            properties
+                Data_Model::Data_Representation =>
+                    Float;
+        end Speed;
+
+        data implementation Speed.impl
+        end Speed.impl;
+
+--------------------------------------------------
+-- BUS
+--------------------------------------------------
+
+bus VehicleBus
+end VehicleBus;
+
+bus implementation VehicleBus.impl
+end VehicleBus.impl;
+
+        --------------------------------------------------
+        -- DEVICES
+        --------------------------------------------------
+
+    device WheelSpeedSensor
+        features
+            BA : requires bus access VehicleBus.impl;
+            wheel_speed : out data port Speed.impl;
+        flows
+            wheel_speed_flow : flow source wheel_speed;
+    end WheelSpeedSensor;
+
+    device implementation WheelSpeedSensor.impl
+    end WheelSpeedSensor.impl;
+
+    device BrakePressureActuator
+        features
+            BA : requires bus access VehicleBus.impl;
+            brake_pressure_command : in data port Pressure.impl;
+        flows
+            brake_pressure_flow : flow sink brake_pressure_command;
+    end BrakePressureActuator;
+
+    device implementation BrakePressureActuator.impl
+    end BrakePressureActuator.impl;
+
+    device Output_processed_speed
+        features
+            BA : requires bus access VehicleBus.impl;
+            processed_speed_in : in data port Speed.impl;
+        flows
+            processed_speed_flow : flow sink processed_speed_in;
+    end Output_processed_speed;
+
+    device implementation Output_processed_speed.impl
+    end Output_processed_speed.impl;
+
+    device Output_lock_detection_result
+        features
+            BA : requires bus access VehicleBus.impl;
+            lock_detection_result_in : in data port Boolean.impl;
+        flows
+            lock_detection_flow : flow sink lock_detection_result_in;
+    end Output_lock_detection_result;
+
+    device implementation Output_lock_detection_result.impl
+    end Output_lock_detection_result.impl;
+
+    device Output_processed_speed_out
+        features
+            BA : requires bus access VehicleBus.impl;
+            processed_speed_out_in : in data port Speed.impl;
+    end Output_processed_speed_out;
+
+    device implementation Output_processed_speed_out.impl
+    end Output_processed_speed_out.impl;
+
+    device Output_lock_detection_result_out
+        features
+            BA : requires bus access VehicleBus.impl;
+            lock_detection_result_out_in : in data port Boolean.impl;
+    end Output_lock_detection_result_out;
+
+    device implementation Output_lock_detection_result_out.impl
+    end Output_lock_detection_result_out.impl;
+
+    --------------------------------------------------
+    -- MEMORY
+    --------------------------------------------------
+    memory SystemMemory
+        features
+            BA : requires bus access VehicleBus.impl;
+    end SystemMemory;
+
+    memory implementation SystemMemory.impl
+        properties
+            Memory_Size => 8192 KByte;
+    end SystemMemory.impl;
+
+    --------------------------------------------------
+    -- PROCESSOR
+    --------------------------------------------------
+    processor MainControlUnit
+        features
+            BA : requires bus access VehicleBus.impl;
+    end MainControlUnit;
+
+    processor implementation MainControlUnit.impl
+        properties
+            Deployment::Execution_Platform => Native;
+            Scheduling_Protocol => (POSIX_1003_HIGHEST_PRIORITY_FIRST_PROTOCOL);
+            Clock_Period => 1 ms;
+    end MainControlUnit.impl;
+
+    --------------------------------------------------
+    -- SUBPROGRAMS
+    --------------------------------------------------
+    subprogram ReadWheelSpeed
+        features
+            wheel_speed : in parameter Speed.impl;
+            processed_speed : out parameter Speed.impl;
+    end ReadWheelSpeed;
+
+    subprogram implementation ReadWheelSpeed.impl
+    end ReadWheelSpeed.impl;
+
+    subprogram DetectLock
+        features
+            processed_speed : in parameter Speed.impl;
+            lock_detection_result : out parameter Boolean.impl;
+    end DetectLock;
+
+    subprogram implementation DetectLock.impl
+    end DetectLock.impl;
+
+    subprogram AdjustBrakePressure
+        features
+            lock_detection_result : in parameter Boolean.impl;
+            brake_pressure_command : out parameter Pressure.impl;
+    end AdjustBrakePressure;
+
+    subprogram implementation AdjustBrakePressure.impl
+    end AdjustBrakePressure.impl;
+
+        --------------------------------------------------
+        -- THREADS
+        --------------------------------------------------
+
+                    thread WheelSpeedMonitorThread
+
+        features
+            wheel_speed : in data port Speed.impl;
+            processed_speed : out data port Speed.impl;
+
+                    end WheelSpeedMonitorThread;
+
+    thread implementation WheelSpeedMonitorThread.impl
+
+            calls
+
+                call_seq: {
+
+                    spg_call:
+                        subprogram ReadWheelSpeed.impl;
+
+                };
+
+        connections
+            cnx_param_wheel_speed :
+                parameter wheel_speed
+                -> spg_call.wheel_speed;
+            cnx_param_processed_speed :
+                parameter spg_call.processed_speed
+                -> processed_speed;
+        properties
+            Dispatch_Protocol => Periodic;
+            Period => 10 ms;
+            Dispatch_Offset => 1 ms;
+            Deadline => 10 ms;
+            Compute_Execution_Time => 2 ms .. 2 ms;
+            Priority => 3;
+            Stack_Size => 4 KByte;
+    end WheelSpeedMonitorThread.impl;
+
+                    thread LockDetectionThread
+
+        features
+            processed_speed : in data port Speed.impl;
+            lock_detection_result : out data port Boolean.impl;
+
+                    end LockDetectionThread;
+
+    thread implementation LockDetectionThread.impl
+
+            calls
+
+                call_seq: {
+
+                    spg_call:
+                        subprogram DetectLock.impl;
+
+                };
+
+        connections
+            cnx_param_processed_speed :
+                parameter processed_speed
+                -> spg_call.processed_speed;
+            cnx_param_lock_detection_result :
+                parameter spg_call.lock_detection_result
+                -> lock_detection_result;
+        properties
+            Dispatch_Protocol => Periodic;
+            Period => 20 ms;
+            Dispatch_Offset => 1 ms;
+            Deadline => 20 ms;
+            Compute_Execution_Time => 5 ms .. 5 ms;
+            Priority => 2;
+            Stack_Size => 4 KByte;
+    end LockDetectionThread.impl;
+
+                    thread BrakePressureControlThread
+
+        features
+            lock_detection_result : in data port Boolean.impl;
+            brake_pressure_command : out data port Pressure.impl;
+
+                    end BrakePressureControlThread;
+
+    thread implementation BrakePressureControlThread.impl
+
+            calls
+
+                call_seq: {
+
+                    spg_call:
+                        subprogram AdjustBrakePressure.impl;
+
+                };
+
+        connections
+            cnx_param_lock_detection_result :
+                parameter lock_detection_result
+                -> spg_call.lock_detection_result;
+            cnx_param_brake_pressure_command :
+                parameter spg_call.brake_pressure_command
+                -> brake_pressure_command;
+        properties
+            Dispatch_Protocol => Periodic;
+            Period => 15 ms;
+            Dispatch_Offset => 1 ms;
+            Deadline => 15 ms;
+            Compute_Execution_Time => 3 ms .. 3 ms;
+            Priority => 1;
+            Stack_Size => 4 KByte;
+    end BrakePressureControlThread.impl;
+
+        --------------------------------------------------
+        -- PROCESSES
+        --------------------------------------------------
+
+    process ABSControlProcess
+        features
+            wheel_speed_input : in data port Speed.impl;
+            processed_speed : in data port Speed.impl;
+            lock_detection_result : in data port Boolean.impl;
+            brake_pressure_output : out data port Pressure.impl;
+            processed_speed_out : out data port Speed.impl;
+            lock_detection_result_out : out data port Boolean.impl;
+        flows
+            wheel_speed_monitoring_flow : flow path wheel_speed_input -> processed_speed;
+            lock_detection_flow : flow path processed_speed -> lock_detection_result;
+            brake_pressure_control_flow : flow path lock_detection_result -> brake_pressure_output;
+    end ABSControlProcess;
+
+    process implementation ABSControlProcess.impl
+        subcomponents
+            WheelSpeedMonitorThread : thread WheelSpeedMonitorThread.impl;
+            LockDetectionThread : thread LockDetectionThread.impl;
+            BrakePressureControlThread : thread BrakePressureControlThread.impl;
+        connections
+            ppc_0 :
+                port wheel_speed_input
+                ->
+                WheelSpeedMonitorThread.wheel_speed;
+            ppc_1 :
+                port BrakePressureControlThread.brake_pressure_command
+                ->
+                brake_pressure_output;
+            ppc_fix_wheelspeedmonitorthread_processed_speed :
+                port WheelSpeedMonitorThread.processed_speed
+                ->
+                processed_speed_out;
+            ppc_fix_lockdetectionthread_lock_detection_result :
+                port LockDetectionThread.lock_detection_result
+                ->
+                lock_detection_result_out;
+            ppc_lockdetectionthread_processed_speed :
+                port processed_speed
+                ->
+                LockDetectionThread.processed_speed;
+            ppc_brakepressurecontrolthread_lock_detection_result :
+                port lock_detection_result
+                ->
+                BrakePressureControlThread.lock_detection_result;
+    end ABSControlProcess.impl;
+
+    --------------------------------------------------
+    -- ROOT SYSTEM
+    --------------------------------------------------
+    system RootSystem
+    end RootSystem;
+
+    system implementation RootSystem.impl
+        subcomponents
+            maincontrolunit : processor MainControlUnit.impl;
+            systemmemory : memory SystemMemory.impl;
+            vehiclebus : bus VehicleBus.impl;
+            wheelspeedsensor : device WheelSpeedSensor.impl;
+            brakepressureactuator : device BrakePressureActuator.impl;
+            output_processed_speed : device Output_processed_speed.impl;
+            output_lock_detection_result : device Output_lock_detection_result.impl;
+            output_processed_speed_out : device Output_processed_speed_out.impl;
+            output_lock_detection_result_out : device Output_lock_detection_result_out.impl;
+            abscontrolprocess : process ABSControlProcess.impl;
+        connections
+            cnx_bus_maincontrolunit :
+                bus access VehicleBus
+                -> maincontrolunit.BA;
+            cnx_bus_systemmemory :
+                bus access VehicleBus
+                -> systemmemory.BA;
+            cnx_bus_wheelspeedsensor :
+                bus access VehicleBus
+                -> wheelspeedsensor.BA;
+            cnx_bus_brakepressureactuator :
+                bus access VehicleBus
+                -> brakepressureactuator.BA;
+            cnx_bus_output_processed_speed :
+                bus access VehicleBus
+                -> output_processed_speed.BA;
+            cnx_bus_output_lock_detection_result :
+                bus access VehicleBus
+                -> output_lock_detection_result.BA;
+            cnx_bus_output_processed_speed_out :
+                bus access VehicleBus
+                -> output_processed_speed_out.BA;
+            cnx_bus_output_lock_detection_result_out :
+                bus access VehicleBus
+                -> output_lock_detection_result_out.BA;
+            auto_conn_abscontrolprocess_brake_pressure_output_0 :
+                port abscontrolprocess.brake_pressure_output
+                ->
+                brakepressureactuator.brake_pressure_command
+                    {Actual_Connection_Binding => (reference (vehiclebus));};
+            auto_conn_wheelspeedsensor_wheel_speed_input_1 :
+                port wheelspeedsensor.wheel_speed
+                ->
+                abscontrolprocess.wheel_speed_input
+                    {Actual_Connection_Binding => (reference (vehiclebus));};
+            auto_conn_abscontrolprocess_processed_speed_out_0 :
+                port abscontrolprocess.processed_speed_out
+                ->
+                output_processed_speed_out.processed_speed_out_in
+                    {Actual_Connection_Binding => (reference (vehiclebus));};
+            auto_conn_abscontrolprocess_lock_detection_result_out_1 :
+                port abscontrolprocess.lock_detection_result_out
+                ->
+                output_lock_detection_result_out.lock_detection_result_out_in
+                    {Actual_Connection_Binding => (reference (vehiclebus));};
+            auto_conn_wheelspeedsensor_processed_speed_2 :
+                port wheelspeedsensor.wheel_speed
+                ->
+                abscontrolprocess.processed_speed
+                    {Actual_Connection_Binding => (reference (vehiclebus));};
+        properties
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to abscontrolprocess;
+            Actual_Memory_Binding =>
+                (reference (systemmemory))
+                applies to abscontrolprocess;
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to wheelspeedsensor;
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to brakepressureactuator;
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to output_processed_speed;
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to output_lock_detection_result;
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to output_processed_speed_out;
+            Actual_Processor_Binding =>
+                (reference (maincontrolunit))
+                applies to output_lock_detection_result_out;
+    end RootSystem.impl;
+
+end ABS_Embedded_System;
